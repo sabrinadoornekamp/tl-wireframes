@@ -26,16 +26,25 @@
 
 
         <div class="wireframe-menu">
+          <!-- Dashboard -->
           <div
-            v-for="item in items"
-            :key="item.title"
             class="wireframe-menu-item"
-            :class="{ 'wireframe-active': active === item.title }"
-            @click="handleMenuClick(item)"
+            :class="{ 'wireframe-active': active === 'Dashboard' }"
+            @click="handleMenuClick({ title: 'Dashboard', submenu: false })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div v-if="!isRail" class="wireframe-label">{{ item.title }}</div>
-            <div v-if="!isRail && item.submenu" class="wireframe-arrow" :class="{ 'wireframe-arrow-open': item.expanded }"></div>
+            <div v-if="!isRail" class="wireframe-label">Dashboard</div>
+          </div>
+          
+          <!-- My therapieland -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'My therapieland' }"
+            @click="handleMenuClick({ title: 'My therapieland', submenu: true, expanded: false })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div v-if="!isRail" class="wireframe-label">My therapieland</div>
+            <div v-if="!isRail" class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedSubmenu }"></div>
           </div>
           
           <!-- Submenu for My therapieland -->
@@ -50,6 +59,26 @@
               <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
               <div class="wireframe-label">{{ subItem.title }}</div>
             </div>
+          </div>
+          
+          <!-- Chats -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'Chats' }"
+            @click="handleMenuClick({ title: 'Chats', submenu: false })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div v-if="!isRail" class="wireframe-label">Chats</div>
+          </div>
+          
+          <!-- Settings -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'Settings' }"
+            @click="handleMenuClick({ title: 'Settings', submenu: false })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div v-if="!isRail" class="wireframe-label">Settings</div>
           </div>
         </div>
       </div>
