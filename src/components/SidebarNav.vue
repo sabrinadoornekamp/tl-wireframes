@@ -24,7 +24,6 @@
           </div>
         </div>
 
-
         <div class="wireframe-menu">
           <!-- Dashboard -->
           <div
@@ -124,8 +123,7 @@ const expandedSubmenu = ref(false)
 const handleMenuClick = (item) => {
   if (item.submenu) {
     // Toggle submenu
-    item.expanded = !item.expanded
-    expandedSubmenu.value = item.expanded
+    expandedSubmenu.value = !expandedSubmenu.value
   } else {
     // Regular menu item
     active.value = item.title

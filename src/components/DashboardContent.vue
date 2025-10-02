@@ -1,29 +1,29 @@
 <template>
   <div class="wireframe-dashboard">
     <div class="wireframe-header">
-      <div class="wireframe-title">Dashboard Overview</div>
-      <div class="wireframe-subtitle">Welcome to your dashboard</div>
+      <div class="wireframe-title">E-Health Dashboard</div>
+      <div class="wireframe-subtitle">Monitor your therapy progress and health journey</div>
     </div>
     
     <div class="wireframe-content">
       <div class="wireframe-main-section">
         <div class="wireframe-card wireframe-overview">
           <div class="wireframe-card-header">
-            <div class="wireframe-card-title">Overview</div>
+            <div class="wireframe-card-title">Widget</div>
             <div class="wireframe-card-icon"></div>
           </div>
           <div class="wireframe-card-content">
             <div class="wireframe-metric">
-              <div class="wireframe-metric-label">Total Revenue</div>
-              <div class="wireframe-metric-value">$23,450</div>
+              <div class="wireframe-metric-label">Active Programs</div>
+              <div class="wireframe-metric-value">3</div>
             </div>
             <div class="wireframe-metric">
-              <div class="wireframe-metric-label">Active Users</div>
-              <div class="wireframe-metric-value">12,340</div>
+              <div class="wireframe-metric-label">Completed Sessions</div>
+              <div class="wireframe-metric-value">24/30</div>
             </div>
             <div class="wireframe-metric">
-              <div class="wireframe-metric-label">Growth Rate</div>
-              <div class="wireframe-metric-value">+15.2%</div>
+              <div class="wireframe-metric-label">Progress Rate</div>
+              <div class="wireframe-metric-value">80%</div>
             </div>
           </div>
         </div>
@@ -31,7 +31,7 @@
         <div class="wireframe-charts">
           <div class="wireframe-chart wireframe-chart-large">
             <div class="wireframe-chart-header">
-              <div class="wireframe-chart-title">Sales Performance</div>
+              <div class="wireframe-chart-title">Widget</div>
               <div class="wireframe-chart-controls">
                 <div class="wireframe-button">Week</div>
                 <div class="wireframe-button">Month</div>
@@ -48,7 +48,7 @@
       <div class="wireframe-side-section">
         <div class="wireframe-card wireframe-tasks">
           <div class="wireframe-card-header">
-            <div class="wireframe-card-title">Recent Tasks</div>
+            <div class="wireframe-card-title">Widget</div>
             <div class="wireframe-card-icon"></div>
           </div>
           <div class="wireframe-card-content">
@@ -67,7 +67,7 @@
         
         <div class="wireframe-card wireframe-notifications">
           <div class="wireframe-card-header">
-            <div class="wireframe-card-title">Notifications</div>
+            <div class="wireframe-card-title">Widget</div>
             <div class="wireframe-card-icon"></div>
           </div>
           <div class="wireframe-card-content">
@@ -75,14 +75,14 @@
               <div class="wireframe-notification">
                 <div class="wireframe-notification-icon"></div>
                 <div class="wireframe-notification-content">
-                  <div class="wireframe-notification-title">New message received</div>
-                  <div class="wireframe-notification-time">2 minutes ago</div>
+                  <div class="wireframe-notification-title">Therapy session reminder</div>
+                  <div class="wireframe-notification-time">Tomorrow 2:00 PM</div>
                 </div>
               </div>
               <div class="wireframe-notification">
                 <div class="wireframe-notification-icon"></div>
                 <div class="wireframe-notification-content">
-                  <div class="wireframe-notification-title">System update available</div>
+                  <div class="wireframe-notification-title">New exercise program available</div>
                   <div class="wireframe-notification-time">1 hour ago</div>
                 </div>
               </div>
@@ -96,9 +96,9 @@
 
 <script setup>
 const tasks = [
-  { title: 'Prepare report', subtitle: 'Due today' },
-  { title: 'Email follow-ups', subtitle: '2 pending' },
-  { title: 'Design review', subtitle: 'Tomorrow 3 PM' },
+  { title: 'Complete daily mood check-in', subtitle: 'Due today' },
+  { title: 'Practice breathing exercises', subtitle: '2 sessions pending' },
+  { title: 'Review therapy homework', subtitle: 'Tomorrow 3 PM' },
 ]
 </script>
 
