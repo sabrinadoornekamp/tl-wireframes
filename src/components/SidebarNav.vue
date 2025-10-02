@@ -174,7 +174,6 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   transition: all 0.2s;
   min-width: 24px;
   width: 100%;
-  position: relative;
 }
 
 .wireframe-menu-item:hover {
@@ -220,16 +219,9 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 }
 
 .wireframe-submenu {
-  position: absolute;
-  left: 20px;
-  right: 12px;
-  top: 100%;
-  z-index: 10;
-  background: white;
-  border: 2px solid #333;
-  border-radius: 4px;
+  margin-left: 20px;
   margin-top: 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px;
 }
 
 .wireframe-submenu-item {
