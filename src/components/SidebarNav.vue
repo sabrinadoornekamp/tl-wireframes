@@ -37,10 +37,25 @@
             :key="item.title"
             class="wireframe-menu-item"
             :class="{ 'wireframe-active': active === item.title }"
-            @click="active = item.title"
+            @click="handleMenuClick(item)"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
             <div v-if="!isRail" class="wireframe-label">{{ item.title }}</div>
+            <div v-if="!isRail && item.submenu" class="wireframe-arrow" :class="{ 'wireframe-arrow-open': item.expanded }"></div>
+          </div>
+          
+          <!-- Submenu for My therapieland -->
+          <div v-if="!isRail && expandedSubmenu" class="wireframe-submenu">
+            <div
+              v-for="subItem in therapielandSubmenu"
+              :key="subItem.title"
+              class="wireframe-submenu-item"
+              :class="{ 'wireframe-active': active === subItem.title }"
+              @click="active = subItem.title"
+            >
+              <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
+              <div class="wireframe-label">{{ subItem.title }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -68,14 +83,31 @@ const props = defineProps({
 const isRail = computed(() => props.rail && !props.isMobile)
 
 const items = [
-  { title: 'Dashboard', iconUrl: 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_code/assets/c25c25ba-fa87-413a-a59d-6a35ca63b2a2/figma%3Aasset/1693fce9a0badd369510ba0fff58cc5debf37d58.svg' },
-  { title: 'Revenue', iconUrl: 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_code/assets/c25c25ba-fa87-413a-a59d-6a35ca63b2a2/figma%3Aasset/3520cf7cb3a3a6ce94c6025f923d32589775a7fd.svg' },
-  { title: 'Notifications', iconUrl: 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_code/assets/c25c25ba-fa87-413a-a59d-6a35ca63b2a2/figma%3Aasset/75146d574f932bd730b340c39a020cfd7c24ee94.svg' },
-  { title: 'Analytics', iconUrl: 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_code/assets/c25c25ba-fa87-413a-a59d-6a35ca63b2a2/figma%3Aasset/76f75c202da231e26a145eb59c2110b011b1520a.svg' },
-  { title: 'Inventory', iconUrl: 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_code/assets/c25c25ba-fa87-413a-a59d-6a35ca63b2a2/figma%3Aasset/af81a1d7a8c7ec87d6aa75993d983835f36e046d.svg' },
+  { title: 'Dashboard', submenu: false },
+  { title: 'My therapieland', submenu: true, expanded: false },
+  { title: 'Chats', submenu: false },
 ]
 
-const active = ref(items[0].title)
+const therapielandSubmenu = [
+  { title: 'Monitors' },
+  { title: 'Programs & questionnaires' },
+  { title: 'Library' },
+]
+
+const active = ref('Dashboard')
+const expandedSubmenu = ref(false)
+
+const handleMenuClick = (item) => {
+  if (item.submenu) {
+    // Toggle submenu
+    item.expanded = !item.expanded
+    expandedSubmenu.value = item.expanded
+  } else {
+    // Regular menu item
+    active.value = item.title
+    expandedSubmenu.value = false
+  }
+}
 const search = ref('')
 const avatarSrc = 'https://s3-alpha-sig.figma.com/img/8242/5855/478e145e1b8ec85651a72ac2891dc900?Expires=1760313600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=cJJcQryNGMT19zTyRiISngKrQx~HXyqZyXTUaMT0xJgIfh49hFR-qhRi0QVZykig-HK~9ofittBgGTllDgbmRmf2Dqyag0WZzBRlbPY9Tn~F3Yq88gvIkQGOmeRTb0YHE0pxELIaSjVFAaJbGd80y-1nUecID6wSvl-ybZQBXR8MerEg0dLcRq9rgaOlgGh6sbQxCgqiAJKkiwJWtOfGH8TQgW77m6X9puGXYRIWWuirYJKTw6T3Xz-ABmEKXzFDcbyvpC-hpGiuZHE~qQHBxhl1HwYKudeUXz56rKuNgP64EP0x3Jlers7R2ewesKI-vHPW1aoI04bpdfABsA2AfQ__'
 const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_code/assets/c25c25ba-fa87-413a-a59d-6a35ca63b2a2/figma%3Aasset/2f491662dd6056b10707646d03261ab37ca2d864.svg'
@@ -197,6 +229,58 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 
 .wireframe-logout {
   margin-bottom: 12px;
+}
+
+.wireframe-arrow {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #333;
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.wireframe-arrow-open {
+  transform: rotate(180deg);
+}
+
+.wireframe-submenu {
+  margin-left: 20px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.wireframe-submenu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 2px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 24px;
+  width: 100%;
+}
+
+.wireframe-submenu-item:hover {
+  border-color: #666;
+  border-width: 2px;
+}
+
+.wireframe-submenu-item.wireframe-active {
+  border-color: #4a90e2 !important;
+  border-width: 2px !important;
+}
+
+.wireframe-submenu-icon {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #333;
+  border-radius: 2px;
+  margin-right: 8px;
+  flex-shrink: 0;
 }
 </style>
 
