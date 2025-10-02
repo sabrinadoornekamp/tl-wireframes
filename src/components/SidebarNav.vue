@@ -24,12 +24,6 @@
           </div>
         </div>
 
-        <div class="mb-6" v-if="!isRail">
-          <div class="wireframe-search">
-            <div class="wireframe-search-icon" style="min-width: 24px;"></div>
-            <div class="wireframe-search-text">Search...</div>
-          </div>
-        </div>
 
         <div class="wireframe-menu">
           <div
@@ -86,6 +80,7 @@ const items = [
   { title: 'Dashboard', submenu: false },
   { title: 'My therapieland', submenu: true, expanded: false },
   { title: 'Chats', submenu: false },
+  { title: 'Settings', submenu: false },
 ]
 
 const therapielandSubmenu = [
@@ -163,28 +158,6 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   font-size: 14px;
 }
 
-.wireframe-search {
-  border: 2px solid #333;
-  padding: 12px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.wireframe-search-icon {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #333;
-  border-radius: 2px;
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-
-.wireframe-search-text {
-  color: #999;
-  font-style: italic;
-}
 
 .wireframe-menu {
   margin-bottom: 20px;
@@ -201,6 +174,7 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   transition: all 0.2s;
   min-width: 24px;
   width: 100%;
+  position: relative;
 }
 
 .wireframe-menu-item:hover {
@@ -246,9 +220,16 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 }
 
 .wireframe-submenu {
-  margin-left: 20px;
+  position: absolute;
+  left: 20px;
+  right: 12px;
+  top: 100%;
+  z-index: 10;
+  background: white;
+  border: 2px solid #333;
+  border-radius: 4px;
   margin-top: 4px;
-  margin-bottom: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .wireframe-submenu-item {
