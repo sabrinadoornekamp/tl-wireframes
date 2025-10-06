@@ -269,7 +269,7 @@ const program = computed(() => {
         }
       ]
     },
-    'mindfulness-stress-reduction': {
+    'mindfulness--stress-reduction': {
       title: 'Mindfulness & Stress Reduction',
       description: '6-week mindfulness-based stress reduction program',
       progress: 0,
@@ -590,8 +590,11 @@ const selectModule = (module) => {
       'introduction-to-cbt': '/program/cognitive-behavioral-therapy/module/introduction-to-cbt',
       'identifying-negative-thoughts': '/program/cognitive-behavioral-therapy/module/identifying-negative-thoughts'
     },
-    'mindfulness-stress-reduction': {
-      'introduction-to-mindfulness': '/program/mindfulness-stress-reduction/module/introduction-to-mindfulness'
+    'mindfulness--stress-reduction': {
+      'introduction-to-mindfulness': '/program/mindfulness--stress-reduction/module/introduction-to-mindfulness',
+      'body-scan-meditation': '/program/mindfulness--stress-reduction/module/body-scan-meditation',
+      'breathing-exercises': '/program/mindfulness--stress-reduction/module/breathing-exercises',
+      'mindful-movement': '/program/mindfulness--stress-reduction/module/mindful-movement'
     },
     'anxiety-management': {
       'understanding-anxiety': '/program/anxiety-management/module/understanding-anxiety'
