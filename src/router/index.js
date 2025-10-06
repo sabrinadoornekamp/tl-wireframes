@@ -174,4 +174,17 @@ const router = createRouter({
   routes
 })
 
+// Redirect to GitHub Pages URL when application is refreshed
+router.beforeEach((to, from, next) => {
+  // Check if we're running on localhost and redirect to GitHub Pages
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    // Only redirect if not already on GitHub Pages
+    if (!window.location.href.includes('sabrinadoornekamp.github.io')) {
+      window.location.href = 'https://sabrinadoornekamp.github.io/tl-wireframes/'
+      return
+    }
+  }
+  next()
+})
+
 export default router
