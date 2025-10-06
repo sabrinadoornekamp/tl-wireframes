@@ -3,7 +3,8 @@
     <AppHeader @toggle-drawer="toggleDrawer" />
     <SidebarNav :drawer="drawer" :rail="rail" :is-mobile="isMobile" />
     <v-main>
-      <DashboardContent />
+      <BreadcrumbNav />
+      <router-view />
       <AppFooter />
     </v-main>
   </v-app>
@@ -13,8 +14,8 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import SidebarNav from '@/components/SidebarNav.vue'
 import AppHeader from '@/components/AppHeader.vue'
-import DashboardContent from '@/components/DashboardContent.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import BreadcrumbNav from '@/components/BreadcrumbNav.vue'
 
 const drawer = ref(true)
 const rail = ref(false)

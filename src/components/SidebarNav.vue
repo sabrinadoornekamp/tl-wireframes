@@ -48,15 +48,49 @@
           
           <!-- Submenu for My therapieland -->
           <div v-if="!isRail && expandedSubmenu" class="wireframe-submenu">
+            <!-- Monitors -->
             <div
-              v-for="subItem in therapielandSubmenu"
-              :key="subItem.title"
               class="wireframe-submenu-item"
-              :class="{ 'wireframe-active': active === subItem.title }"
-              @click="active = subItem.title"
+              :class="{ 'wireframe-active': active === 'Monitors' }"
+              @click="handleSubmenuClick({ title: 'Monitors' })"
             >
               <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
-              <div class="wireframe-label">{{ subItem.title }}</div>
+              <div class="wireframe-label">Monitors</div>
+            </div>
+            
+            <!-- Programs & questionnaires -->
+            <div
+              class="wireframe-submenu-item"
+              :class="{ 'wireframe-active': active === 'Programs & questionnaires' }"
+              @click="handleSubmenuClick({ title: 'Programs & questionnaires', hasSubmenu: true })"
+            >
+              <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
+              <div class="wireframe-label">Programs & questionnaires</div>
+              <div class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedProgramsSubmenu }"></div>
+            </div>
+            
+            <!-- Programs submenu - positioned directly under Programs & questionnaires -->
+            <div v-if="expandedProgramsSubmenu" class="wireframe-programs-submenu">
+              <div
+                v-for="program in programsSubmenu"
+                :key="program.title"
+                class="wireframe-submenu-item wireframe-program-item"
+                :class="{ 'wireframe-active': active === program.title }"
+                @click="handleProgramClick(program)"
+              >
+                <div class="wireframe-submenu-icon" style="min-width: 20px;"></div>
+                <div class="wireframe-label">{{ program.title }}</div>
+              </div>
+            </div>
+            
+            <!-- Library -->
+            <div
+              class="wireframe-submenu-item"
+              :class="{ 'wireframe-active': active === 'Library' }"
+              @click="handleSubmenuClick({ title: 'Library' })"
+            >
+              <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
+              <div class="wireframe-label">Library</div>
             </div>
           </div>
           
@@ -94,7 +128,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const props = defineProps({
   drawer: { type: Boolean, required: true },
@@ -102,6 +137,8 @@ const props = defineProps({
   isMobile: { type: Boolean, default: false },
 })
 
+const router = useRouter()
+const route = useRoute()
 const isRail = computed(() => props.rail && !props.isMobile)
 
 const items = [
@@ -113,22 +150,102 @@ const items = [
 
 const therapielandSubmenu = [
   { title: 'Monitors' },
-  { title: 'Programs & questionnaires' },
+  { title: 'Programs & questionnaires', hasSubmenu: true },
   { title: 'Library' },
+]
+
+const programsSubmenu = [
+  { title: 'Cognitive Behavioral Therapy' },
+  { title: 'Mindfulness & Stress Reduction' },
+  { title: 'Trauma Recovery Program' },
+  { title: 'Depression Treatment Program' },
+  { title: 'Social Skills Training' },
+  { title: 'Anger Management Program' },
 ]
 
 const active = ref('Dashboard')
 const expandedSubmenu = ref(false)
+const expandedProgramsSubmenu = ref(false)
+
+// Update active state based on current route
+const updateActiveState = () => {
+  if (route.path === '/') {
+    active.value = 'Dashboard'
+    expandedSubmenu.value = false
+    expandedProgramsSubmenu.value = false
+  } else if (route.path === '/programs-questionnaires') {
+    active.value = 'Programs & questionnaires'
+    expandedSubmenu.value = true
+    // Don't auto-expand programs submenu, let user control it
+    expandedProgramsSubmenu.value = false
+  }
+}
+
+// Watch for route changes
+watch(() => route.path, updateActiveState, { immediate: true })
 
 const handleMenuClick = (item) => {
   if (item.submenu) {
     // Toggle submenu
     expandedSubmenu.value = !expandedSubmenu.value
+    // Also navigate to the overview page when clicking My therapieland
+    if (item.title === 'My therapieland') {
+      active.value = item.title
+      router.push('/my-therapieland')
+    }
   } else {
-    // Regular menu item
+    // Regular menu item - navigate to route
     active.value = item.title
-    expandedSubmenu.value = false
+    // Don't close submenu - keep it open
+    // expandedSubmenu.value = false
+    
+    // Navigate based on menu item
+    if (item.title === 'Dashboard') {
+      router.push('/')
+    } else if (item.title === 'Chats') {
+      // Add route for chats when created
+      console.log('Chats page not implemented yet')
+    } else if (item.title === 'Settings') {
+      // Add route for settings when created
+      console.log('Settings page not implemented yet')
+    }
   }
+}
+
+const handleSubmenuClick = (subItem) => {
+  if (subItem.hasSubmenu) {
+    // Toggle programs submenu
+    expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
+    // Also navigate to the programs page when clicking Programs & questionnaires
+    if (subItem.title === 'Programs & questionnaires') {
+      active.value = subItem.title
+      router.push('/programs-questionnaires')
+    }
+  } else {
+    active.value = subItem.title
+    // Don't close submenus - keep them open
+    // expandedSubmenu.value = false
+    // expandedProgramsSubmenu.value = false
+    
+    // Navigate based on submenu item
+    if (subItem.title === 'Programs & questionnaires') {
+      router.push('/programs-questionnaires')
+    } else {
+      // Add routes for other submenu items when created
+      console.log(`${subItem.title} page not implemented yet`)
+    }
+  }
+}
+
+const handleProgramClick = (program) => {
+  active.value = program.title
+  // Don't close submenus - keep them open
+  // expandedSubmenu.value = false
+  // expandedProgramsSubmenu.value = false
+  
+  // Navigate to specific program detail page
+  const programId = program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')
+  router.push(`/program/${programId}`)
 }
 const search = ref('')
 const avatarSrc = 'https://s3-alpha-sig.figma.com/img/8242/5855/478e145e1b8ec85651a72ac2891dc900?Expires=1760313600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=cJJcQryNGMT19zTyRiISngKrQx~HXyqZyXTUaMT0xJgIfh49hFR-qhRi0QVZykig-HK~9ofittBgGTllDgbmRmf2Dqyag0WZzBRlbPY9Tn~F3Yq88gvIkQGOmeRTb0YHE0pxELIaSjVFAaJbGd80y-1nUecID6wSvl-ybZQBXR8MerEg0dLcRq9rgaOlgGh6sbQxCgqiAJKkiwJWtOfGH8TQgW77m6X9puGXYRIWWuirYJKTw6T3Xz-ABmEKXzFDcbyvpC-hpGiuZHE~qQHBxhl1HwYKudeUXz56rKuNgP64EP0x3Jlers7R2ewesKI-vHPW1aoI04bpdfABsA2AfQ__'
@@ -205,12 +322,13 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 
 .wireframe-menu-item:hover {
   border-color: #666;
-  border-width: 3px;
+  border-width: 2px;
 }
 
 .wireframe-active {
-  border-color: #4a90e2 !important;
-  border-width: 3px !important;
+  background: #f0f0f0 !important;
+  border-color: #333 !important;
+  border-width: 2px !important;
 }
 
 .wireframe-icon {
@@ -266,12 +384,13 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 
 .wireframe-submenu-item:hover {
   border-color: #666;
-  border-width: 2px;
+  border-width: 1px;
 }
 
 .wireframe-submenu-item.wireframe-active {
-  border-color: #4a90e2 !important;
-  border-width: 2px !important;
+  background: #f0f0f0 !important;
+  border-color: #333 !important;
+  border-width: 1px !important;
 }
 
 .wireframe-submenu-icon {
@@ -281,6 +400,24 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   border-radius: 2px;
   margin-right: 8px;
   flex-shrink: 0;
+}
+
+.wireframe-programs-submenu {
+  margin-left: 20px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.wireframe-program-item {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: 1px solid #333;
+  border-radius: 3px;
+}
+
+.wireframe-program-item:hover {
+  border-color: #666;
+  border-width: 1px;
 }
 </style>
 

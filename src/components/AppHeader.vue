@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app flat>
+  <v-app-bar app flat class="wireframe-app-bar">
     <v-btn icon class="mr-2" @click="$emit('toggle-drawer')">
       <v-icon>mdi-menu</v-icon>
     </v-btn>
@@ -17,5 +17,11 @@
 <script setup>
 defineEmits(['toggle-drawer'])
 </script>
+
+<style scoped>
+.wireframe-app-bar {
+  border-bottom: 2px solid #333 !important;
+}
+</style>
 
 

@@ -1,8 +1,8 @@
 <template>
   <div class="wireframe-dashboard">
     <div class="wireframe-header">
-      <div class="wireframe-title">E-Health Dashboard</div>
-      <div class="wireframe-subtitle">Monitor your therapy progress and health journey</div>
+      <div class="wireframe-title">Therapieland Dashboard</div>
+      <div class="wireframe-subtitle">Your personalized therapy journey and wellness tracking</div>
     </div>
     
     <div class="wireframe-content">
@@ -116,10 +116,12 @@ const tasks = [
   border: 2px solid #333;
   padding: 20px;
   border-radius: 4px;
+  background: white;
+  color: #333;
 }
 
 .wireframe-title {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   color: #333;
   margin-bottom: 8px;
