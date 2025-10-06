@@ -296,7 +296,7 @@ const contactCareProvider = () => {
 
 .wireframe-title {
   font-size: 28px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-bottom: 8px;
 }
@@ -329,7 +329,7 @@ const contactCareProvider = () => {
 
 .wireframe-section-title {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -372,7 +372,7 @@ const contactCareProvider = () => {
 
 .wireframe-progress-value {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-bottom: 4px;
 }
@@ -478,7 +478,7 @@ const contactCareProvider = () => {
   border: 2px solid #333;
   border-radius: 4px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
   text-align: center;
   text-transform: uppercase;
 }
@@ -570,7 +570,7 @@ const contactCareProvider = () => {
   border: 2px solid #333;
   border-radius: 4px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
 }
 

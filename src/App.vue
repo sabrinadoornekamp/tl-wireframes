@@ -5,24 +5,28 @@
     <v-main>
       <BreadcrumbNav />
       <router-view />
-      <AppFooter />
     </v-main>
   </v-app>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import SidebarNav from '@/components/SidebarNav.vue'
 import AppHeader from '@/components/AppHeader.vue'
-import AppFooter from '@/components/AppFooter.vue'
 import BreadcrumbNav from '@/components/BreadcrumbNav.vue'
 
+const route = useRoute()
 const drawer = ref(true)
 const rail = ref(false)
 const isMobile = ref(false)
 
-function handleResize () {
-  isMobile.value = window.innerWidth < 960
+function handleResize() {
+  const width = window.innerWidth
+  // Desktop: >= 1200px
+  // Tablet: 768px - 1199px  
+  // Mobile: < 768px
+  isMobile.value = width < 768
   if (isMobile.value) {
     rail.value = false
     drawer.value = false
@@ -31,7 +35,7 @@ function handleResize () {
   }
 }
 
-function toggleDrawer () {
+function toggleDrawer() {
   if (isMobile.value) {
     drawer.value = !drawer.value
   } else {
@@ -39,12 +43,182 @@ function toggleDrawer () {
   }
 }
 
+// Watch for route changes to ensure sidebar is visible on non-module pages
+watch(() => route.path, (newPath) => {
+  // If not on a module page, ensure sidebar and app bar are visible
+  if (!newPath.includes('/module/')) {
+    const sidebar = document.querySelector('.v-navigation-drawer')
+    const appBar = document.querySelector('.v-app-bar')
+    
+    if (sidebar) {
+      sidebar.style.display = ''
+      sidebar.style.visibility = ''
+    }
+    if (appBar) {
+      appBar.style.display = ''
+      appBar.style.visibility = ''
+    }
+  }
+}, { immediate: true })
+
 onMounted(() => {
   handleResize()
   window.addEventListener('resize', handleResize)
+  
+  // Ensure sidebar and app bar are visible on app mount
+  const sidebar = document.querySelector('.v-navigation-drawer')
+  const appBar = document.querySelector('.v-app-bar')
+  
+  if (sidebar) {
+    sidebar.style.display = ''
+    sidebar.style.visibility = ''
+  }
+  if (appBar) {
+    appBar.style.display = ''
+    appBar.style.visibility = ''
+  }
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize)
 })
 </script>
+
+<style>
+/* Global typewriter font for all wireframe components */
+* {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace !important;
+  color: black;
+  font-weight: 600;
+}
+
+/* Override Vuetify components to use typewriter font */
+.v-application {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace !important;
+}
+
+.v-toolbar-title,
+.v-list-item-title,
+.v-list-item-subtitle,
+.v-btn,
+.v-card-title,
+.v-card-text,
+.v-chip,
+.v-badge,
+.v-navigation-drawer,
+.v-app-bar {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace !important;
+  color: black;
+  font-weight: 600;
+}
+
+/* Let Vuetify handle main content positioning naturally */
+.v-main {
+  transition: margin-left 0.3s ease !important;
+  padding-top: 64px !important; /* Account for fixed top bar height */
+}
+
+/* Responsive content spacing */
+.router-view {
+  padding: 24px;
+  margin-top: 0 !important; /* No top margin, breadcrumb handles spacing */
+  transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Desktop: >= 1200px */
+@media (min-width: 1200px) {
+  .router-view {
+    padding: 24px;
+  }
+}
+
+/* Tablet: 768px - 1199px */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .router-view {
+    padding: 20px;
+  }
+}
+
+/* Mobile: < 768px */
+@media (max-width: 767px) {
+  .router-view {
+    padding: 16px;
+  }
+}
+
+/* Small mobile: < 480px */
+@media (max-width: 479px) {
+  .router-view {
+    padding: 12px;
+  }
+}
+
+/* Responsive breakpoints for sidebar behavior */
+
+/* Desktop: >= 1200px - Sidebar pushes content aside */
+@media (min-width: 1200px) {
+  :deep(.v-navigation-drawer--permanent) {
+    position: relative !important;
+  }
+  
+  :deep(.v-main) {
+    margin-left: 0 !important; /* Let Vuetify handle this */
+  }
+}
+
+/* Tablet: 768px - 1199px - Sidebar pushes content aside but smaller */
+@media (min-width: 768px) and (max-width: 1199px) {
+  :deep(.v-navigation-drawer--permanent) {
+    position: relative !important;
+  }
+  
+  :deep(.v-main) {
+    margin-left: 0 !important; /* Let Vuetify handle this */
+  }
+  
+  /* Adjust sidebar width for tablet */
+  :deep(.v-navigation-drawer) {
+    width: 240px !important;
+  }
+  
+  :deep(.v-navigation-drawer--rail) {
+    width: 80px !important;
+  }
+}
+
+/* Mobile: < 768px - Sidebar becomes overlay */
+@media (max-width: 767px) {
+  :deep(.v-navigation-drawer--permanent) {
+    position: fixed !important;
+    z-index: 5 !important; /* Below app bar */
+  }
+  
+  :deep(.v-main) {
+    margin-left: 0 !important;
+  }
+  
+  /* Ensure mobile sidebar is full width */
+  :deep(.v-navigation-drawer) {
+    width: 100vw !important;
+    max-width: 320px !important;
+  }
+}
+
+/* Breadcrumb positioning within v-main */
+.v-main .wireframe-breadcrumb {
+  margin-bottom: 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure borders are always visible on topbar and sidebar */
+.v-app-bar.wireframe-app-bar {
+  border-bottom: 2px solid #333 !important;
+  border-left: 2px solid #333 !important;
+  border-right: 2px solid #333 !important;
+}
+
+.v-navigation-drawer.wireframe-sidebar {
+  border: 2px solid #333 !important;
+}
+</style>

@@ -248,7 +248,7 @@ const questionnaire = computed(() => {
 
 .wireframe-title {
   font-size: 28px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-bottom: 8px;
 }
@@ -281,7 +281,7 @@ const questionnaire = computed(() => {
 
 .wireframe-section-title {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -290,7 +290,7 @@ const questionnaire = computed(() => {
   border: 2px solid #333;
   border-radius: 4px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
   background: #f0f0f0;
 }
@@ -311,7 +311,7 @@ const questionnaire = computed(() => {
   font-size: 14px;
   color: #666;
   margin-bottom: 8px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .wireframe-overview-value {
@@ -340,7 +340,7 @@ const questionnaire = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 14px;
   flex-shrink: 0;
 }
@@ -373,7 +373,7 @@ const questionnaire = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 600;
   flex-shrink: 0;
 }
 
@@ -449,7 +449,7 @@ const questionnaire = computed(() => {
   border: 1px solid #333;
   border-radius: 2px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
 }
 

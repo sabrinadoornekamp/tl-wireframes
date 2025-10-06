@@ -14,7 +14,7 @@
         </div>
         
         <div class="wireframe-programs-grid">
-          <div class="wireframe-program-card" v-for="(program, index) in programs" :key="index">
+          <div class="wireframe-program-card" v-for="(program, index) in programs" :key="index" @click="navigateToLastModule(program)">
             <div class="wireframe-program-header">
               <div class="wireframe-program-icon"></div>
               <div class="wireframe-program-status" :class="program.status"></div>
@@ -124,13 +124,60 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const viewProgramDetail = (program) => {
-  const programId = program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')
+  // Create a mapping for program titles to their correct IDs
+  const programIdMap = {
+    'Cognitive Behavioral Therapy': 'cognitive-behavioral-therapy',
+    'Mindfulness & Stress Reduction': 'mindfulness--stress-reduction',
+    'Anxiety Management': 'anxiety-management',
+    'Trauma Recovery Program': 'trauma-recovery-program',
+    'Depression Treatment Program': 'depression-treatment-program',
+    'Social Skills Training': 'social-skills-training',
+    'Anger Management Program': 'anger-management-program'
+  }
+  
+  const programId = programIdMap[program.title] || program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '').replace(/--+/g, '-')
   router.push(`/program/${programId}`)
 }
 
 const viewQuestionnaireDetail = (questionnaire) => {
   const questionnaireId = questionnaire.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')
   router.push(`/questionnaire/${questionnaireId}`)
+}
+
+const navigateToLastModule = (program) => {
+  // Create a mapping for program titles to their correct IDs
+  const programIdMap = {
+    'Cognitive Behavioral Therapy': 'cognitive-behavioral-therapy',
+    'Mindfulness & Stress Reduction': 'mindfulness--stress-reduction',
+    'Anxiety Management': 'anxiety-management',
+    'Trauma Recovery Program': 'trauma-recovery-program',
+    'Depression Treatment Program': 'depression-treatment-program',
+    'Social Skills Training': 'social-skills-training',
+    'Anger Management Program': 'anger-management-program'
+  }
+  
+  const programId = programIdMap[program.title] || program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '').replace(/--+/g, '-')
+  
+  // Navigate to the last active module for this program
+  // For now, we'll navigate to the first module, but this could be enhanced to track last viewed module
+  const lastActiveModule = getLastActiveModule(program.title)
+  router.push(`/program/${programId}/module/${lastActiveModule}`)
+}
+
+const getLastActiveModule = (programTitle) => {
+  // This function would typically get the last active module from localStorage or a store
+  // For now, we'll return the first module for each program
+  const moduleMap = {
+    'Cognitive Behavioral Therapy': 'introduction-to-cbt',
+    'Mindfulness & Stress Reduction': 'introduction-to-mindfulness',
+    'Anxiety Management': 'understanding-anxiety',
+    'Trauma Recovery Program': 'understanding-trauma',
+    'Depression Treatment Program': 'understanding-depression',
+    'Social Skills Training': 'introduction-to-social-skills',
+    'Anger Management Program': 'understanding-anger'
+  }
+  
+  return moduleMap[programTitle] || 'introduction'
 }
 
 const programs = [
@@ -284,6 +331,7 @@ const recentActivity = [
   min-height: 100vh;
   max-width: 1280px;
   margin: 0 auto;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 }
 
 .wireframe-header {
@@ -297,7 +345,7 @@ const recentActivity = [
 
 .wireframe-title {
   font-size: 28px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-bottom: 8px;
 }
@@ -330,7 +378,7 @@ const recentActivity = [
 
 .wireframe-section-title {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -384,6 +432,15 @@ const recentActivity = [
   display: flex;
   flex-direction: column;
   gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.wireframe-program-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-color: #666;
 }
 
 .wireframe-program-header {
@@ -445,7 +502,7 @@ const recentActivity = [
 
 .wireframe-program-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-bottom: 8px;
 }
@@ -502,7 +559,7 @@ const recentActivity = [
 
 .wireframe-meta-value {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
 }
 
@@ -559,7 +616,7 @@ const recentActivity = [
 
 .wireframe-questionnaire-title {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-bottom: 8px;
 }
@@ -590,7 +647,7 @@ const recentActivity = [
 
 .wireframe-stat-value {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -629,7 +686,7 @@ const recentActivity = [
 }
 
 .wireframe-activity-title {
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
   margin-bottom: 4px;
 }

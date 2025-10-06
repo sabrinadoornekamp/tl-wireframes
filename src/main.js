@@ -17,7 +17,7 @@ import { createApp } from 'vue'
 import router from './router'
 
 // Styles
-import 'unfonts.css'
+// import 'unfonts.css' // Removed - file doesn't exist
 
 const app = createApp(App)
 

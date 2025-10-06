@@ -1,28 +1,18 @@
 <template>
   <v-navigation-drawer
     :model-value="drawer"
-    :rail="isRail"
-    :permanent="!isMobile"
-    :temporary="isMobile"
+    :rail="rail"
     app
     color="white"
     class="wireframe-sidebar"
-    :width="isRail ? 80 : 280"
+    :width="rail ? 80 : 280"
     :rail-width="80"
+    :permanent="!isMobile"
+    :temporary="isMobile"
+    :overlay="isMobile"
   >
-    <div class="d-flex flex-column justify-space-between h-100 py-4 px-3 wireframe-sidebar-content" style="border-right:1px solid #EFEFEF;">
+    <div class="wireframe-sidebar-content">
       <div>
-        <div class="d-flex align-center mb-6 px-1 wireframe-profile">
-          <div 
-            class="wireframe-avatar mr-3" 
-            :class="{ 'wireframe-avatar-rail': isRail }"
-            style="min-width: 24px;"
-          ></div>
-          <div v-if="!isRail" class="wireframe-text">
-            <div class="wireframe-name">Duck UI</div>
-            <div class="wireframe-email">Duckui@demo.com</div>
-          </div>
-        </div>
 
         <div class="wireframe-menu">
           <!-- Dashboard -->
@@ -32,7 +22,7 @@
             @click="handleMenuClick({ title: 'Dashboard', submenu: false })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div v-if="!isRail" class="wireframe-label">Dashboard</div>
+            <div v-if="!rail" class="wireframe-label">Dashboard</div>
           </div>
           
           <!-- My therapieland -->
@@ -42,12 +32,12 @@
             @click="handleMenuClick({ title: 'My therapieland', submenu: true, expanded: false })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div v-if="!isRail" class="wireframe-label">My therapieland</div>
-            <div v-if="!isRail" class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedSubmenu }"></div>
+            <div v-if="!rail" class="wireframe-label">My therapieland</div>
+            <div v-if="!rail" class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedSubmenu }"></div>
           </div>
           
           <!-- Submenu for My therapieland -->
-          <div v-if="!isRail && expandedSubmenu" class="wireframe-submenu">
+          <div v-if="!rail && expandedSubmenu" class="wireframe-submenu">
             <!-- Monitors -->
             <div
               class="wireframe-submenu-item"
@@ -79,7 +69,19 @@
                 @click="handleProgramClick(program)"
               >
                 <div class="wireframe-submenu-icon" style="min-width: 20px;"></div>
-                <div class="wireframe-label">{{ program.title }}</div>
+                <div class="wireframe-program-content">
+                  <div class="wireframe-label">{{ program.title }}</div>
+                  <div class="wireframe-program-progress">
+                    <div class="wireframe-progress-track">
+                      <div 
+                        class="wireframe-progress-fill" 
+                        :style="{ width: program.progress + '%' }"
+                        :class="program.status"
+                      ></div>
+                    </div>
+                    <div class="wireframe-progress-text">{{ program.progress }}%</div>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -101,7 +103,7 @@
             @click="handleMenuClick({ title: 'Chats', submenu: false })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div v-if="!isRail" class="wireframe-label">Chats</div>
+            <div v-if="!rail" class="wireframe-label">Chats</div>
           </div>
           
           <!-- Settings -->
@@ -111,7 +113,7 @@
             @click="handleMenuClick({ title: 'Settings', submenu: false })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div v-if="!isRail" class="wireframe-label">Settings</div>
+            <div v-if="!rail" class="wireframe-label">Settings</div>
           </div>
         </div>
       </div>
@@ -119,7 +121,7 @@
       <div>
         <div class="wireframe-menu-item wireframe-logout">
           <div class="wireframe-icon" style="min-width: 24px;"></div>
-          <div v-if="!isRail" class="wireframe-label">Logout</div>
+          <div v-if="!rail" class="wireframe-label">Logout</div>
         </div>
       </div>
     </div>
@@ -139,7 +141,6 @@ const props = defineProps({
 
 const router = useRouter()
 const route = useRoute()
-const isRail = computed(() => props.rail && !props.isMobile)
 
 const items = [
   { title: 'Dashboard', submenu: false },
@@ -155,17 +156,18 @@ const therapielandSubmenu = [
 ]
 
 const programsSubmenu = [
-  { title: 'Cognitive Behavioral Therapy' },
-  { title: 'Mindfulness & Stress Reduction' },
-  { title: 'Trauma Recovery Program' },
-  { title: 'Depression Treatment Program' },
-  { title: 'Social Skills Training' },
-  { title: 'Anger Management Program' },
+  { title: 'Cognitive Behavioral Therapy', progress: 65, status: 'active' },
+  { title: 'Mindfulness & Stress Reduction', progress: 0, status: 'not-started' },
+  { title: 'Trauma Recovery Program', progress: 0, status: 'not-started' },
+  { title: 'Depression Treatment Program', progress: 0, status: 'not-started' },
+  { title: 'Social Skills Training', progress: 0, status: 'not-started' },
+  { title: 'Anger Management Program', progress: 0, status: 'not-started' },
 ]
 
 const active = ref('Dashboard')
 const expandedSubmenu = ref(false)
 const expandedProgramsSubmenu = ref(false)
+const userManuallyCollapsedPrograms = ref(false)
 
 // Update active state based on current route
 const updateActiveState = () => {
@@ -173,11 +175,20 @@ const updateActiveState = () => {
     active.value = 'Dashboard'
     expandedSubmenu.value = false
     expandedProgramsSubmenu.value = false
-  } else if (route.path === '/programs-questionnaires') {
+    userManuallyCollapsedPrograms.value = false // Reset manual collapse flag
+  } else if (route.path === '/my-therapieland') {
+    active.value = 'My therapieland'
+    expandedSubmenu.value = true
+    expandedProgramsSubmenu.value = false
+    userManuallyCollapsedPrograms.value = false // Reset manual collapse flag
+  } else if (route.path === '/programs-questionnaires' || route.path.includes('/program/') || route.path.includes('/questionnaire/')) {
     active.value = 'Programs & questionnaires'
     expandedSubmenu.value = true
-    // Don't auto-expand programs submenu, let user control it
-    expandedProgramsSubmenu.value = false
+    // Auto-expand programs submenu when navigating to program pages
+    // But only if user hasn't manually collapsed it
+    if (!userManuallyCollapsedPrograms.value) {
+      expandedProgramsSubmenu.value = true
+    }
   }
 }
 
@@ -214,12 +225,20 @@ const handleMenuClick = (item) => {
 
 const handleSubmenuClick = (subItem) => {
   if (subItem.hasSubmenu) {
-    // Toggle programs submenu
-    expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
-    // Also navigate to the programs page when clicking Programs & questionnaires
+    // Toggle the submenu (allow manual collapse/expand)
     if (subItem.title === 'Programs & questionnaires') {
-      active.value = subItem.title
-      router.push('/programs-questionnaires')
+      expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
+      // Track if user manually collapsed the submenu
+      if (!expandedProgramsSubmenu.value) {
+        userManuallyCollapsedPrograms.value = true
+      } else {
+        userManuallyCollapsedPrograms.value = false
+        active.value = subItem.title
+        router.push('/programs-questionnaires')
+      }
+    } else {
+      // Toggle other submenus
+      expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
     }
   } else {
     active.value = subItem.title
@@ -230,6 +249,10 @@ const handleSubmenuClick = (subItem) => {
     // Navigate based on submenu item
     if (subItem.title === 'Programs & questionnaires') {
       router.push('/programs-questionnaires')
+    } else if (subItem.title === 'Monitors') {
+      router.push('/monitors')
+    } else if (subItem.title === 'Library') {
+      router.push('/library')
     } else {
       // Add routes for other submenu items when created
       console.log(`${subItem.title} page not implemented yet`)
@@ -244,7 +267,17 @@ const handleProgramClick = (program) => {
   // expandedProgramsSubmenu.value = false
   
   // Navigate to specific program detail page
-  const programId = program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')
+  // Map program titles to their correct route IDs
+  const programRouteMap = {
+    'Cognitive Behavioral Therapy': 'cognitive-behavioral-therapy',
+    'Mindfulness & Stress Reduction': 'mindfulness--stress-reduction',
+    'Trauma Recovery Program': 'trauma-recovery-program',
+    'Depression Treatment Program': 'depression-treatment-program',
+    'Social Skills Training': 'social-skills-training',
+    'Anger Management Program': 'anger-management-program'
+  }
+  
+  const programId = programRouteMap[program.title] || program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')
   router.push(`/program/${programId}`)
 }
 const search = ref('')
@@ -256,13 +289,24 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 <style scoped>
 /* Wireframe Styles */
 .wireframe-sidebar {
-  border-right: 2px solid #333 !important;
+  border: 2px solid #333 !important;
   transition: width 0.3s ease;
+  height: 100vh !important;
+  overflow-y: auto !important;
+}
+
+/* Ensure sidebar borders are always visible */
+.v-navigation-drawer.wireframe-sidebar {
+  border: 2px solid #333 !important;
 }
 
 .wireframe-sidebar-content {
   min-width: 80px;
   width: 100%;
+  height: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
 }
 
 .wireframe-profile {
@@ -292,7 +336,7 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 }
 
 .wireframe-name {
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-bottom: 4px;
 }
@@ -318,17 +362,27 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   transition: all 0.2s;
   min-width: 24px;
   width: 100%;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 }
 
 .wireframe-menu-item:hover {
   border-color: #666;
   border-width: 2px;
+  background: #f0f0f0;
+}
+
+.wireframe-menu-item:hover .wireframe-label {
+  font-weight: 600;
 }
 
 .wireframe-active {
-  background: #f0f0f0 !important;
+  background: #d0d0d0 !important;
   border-color: #333 !important;
   border-width: 2px !important;
+}
+
+.wireframe-active .wireframe-label {
+  font-weight: 600 !important;
 }
 
 .wireframe-icon {
@@ -342,7 +396,7 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 
 .wireframe-label {
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .wireframe-logout {
@@ -385,12 +439,21 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 .wireframe-submenu-item:hover {
   border-color: #666;
   border-width: 1px;
+  background: #f0f0f0;
+}
+
+.wireframe-submenu-item:hover .wireframe-label {
+  font-weight: 600;
 }
 
 .wireframe-submenu-item.wireframe-active {
-  background: #f0f0f0 !important;
+  background: #d0d0d0 !important;
   border-color: #333 !important;
   border-width: 1px !important;
+}
+
+.wireframe-submenu-item.wireframe-active .wireframe-label {
+  font-weight: 600 !important;
 }
 
 .wireframe-submenu-icon {
@@ -418,6 +481,113 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 .wireframe-program-item:hover {
   border-color: #666;
   border-width: 1px;
+  background: #e0e0e0;
+  font-weight: 600;
+}
+
+.wireframe-program-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.wireframe-program-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wireframe-progress-track {
+  flex: 1;
+  height: 4px;
+  border: 1px solid #333;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.wireframe-progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.wireframe-progress-fill.active {
+  background: #4CAF50;
+}
+
+.wireframe-progress-fill.not-started {
+  background: #9E9E9E;
+}
+
+.wireframe-progress-fill.completed {
+  background: #2196F3;
+}
+
+.wireframe-progress-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  min-width: 30px;
+  text-align: right;
+}
+
+/* Responsive sidebar behavior */
+
+/* Desktop: >= 1200px */
+@media (min-width: 1200px) {
+  .wireframe-sidebar-content {
+    padding: 16px 12px !important;
+  }
+  
+  .wireframe-menu-item {
+    padding: 12px !important;
+    margin-bottom: 4px !important;
+  }
+}
+
+/* Tablet: 768px - 1199px */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .wireframe-sidebar-content {
+    padding: 14px 10px !important;
+  }
+  
+  .wireframe-menu-item {
+    padding: 10px !important;
+    margin-bottom: 3px !important;
+  }
+  
+  .wireframe-submenu {
+    margin-left: 16px !important;
+  }
+  
+  .wireframe-submenu-item {
+    padding: 6px 10px !important;
+  }
+}
+
+/* Mobile: < 768px */
+@media (max-width: 767px) {
+  .wireframe-sidebar-content {
+    padding: 12px 8px !important;
+  }
+  
+  .wireframe-menu-item {
+    padding: 8px !important;
+    margin-bottom: 2px !important;
+  }
+  
+  .wireframe-submenu {
+    margin-left: 12px !important;
+  }
+  
+  .wireframe-submenu-item {
+    padding: 4px 8px !important;
+  }
+  
+  .wireframe-programs-submenu {
+    margin-left: 12px !important;
+  }
 }
 </style>
 
