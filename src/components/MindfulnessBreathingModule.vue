@@ -114,7 +114,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // Current active module
-const activeModule = ref('introduction-to-mindfulness')
+const activeModule = ref('breathing-exercises')
 
 // Module data for all Mindfulness modules
 const allModules = ref({
@@ -143,7 +143,7 @@ const allModules = ref({
     title: 'Body Scan Meditation',
     description: 'Learn to practice body scan meditation to develop body awareness and reduce stress.',
     duration: '45 min',
-    progress: 0,
+    progress: 100,
     content: {
       title: 'Body Scan Meditation',
       objectives: [
@@ -164,7 +164,7 @@ const allModules = ref({
     title: 'Breathing Exercises',
     description: 'Master various breathing techniques to calm your mind and reduce stress.',
     duration: '35 min',
-    progress: 0,
+    progress: 100,
     content: {
       title: 'Breathing Exercises for Mindfulness',
       objectives: [
@@ -206,7 +206,7 @@ const allModules = ref({
 
 // Current module data (reactive)
 const currentModuleData = computed(() => {
-  return allModules.value[activeModule.value] || allModules.value['introduction-to-mindfulness']
+  return allModules.value[activeModule.value] || allModules.value['breathing-exercises']
 })
 
 const navigateToProgram = () => {
@@ -253,14 +253,19 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  const sidebar = document.querySelector('.v-navigation-drawer')
-  const appBar = document.querySelector('.v-app-bar')
-  
-  if (sidebar) {
-    sidebar.style.display = ''
-  }
-  if (appBar) {
-    appBar.style.display = ''
+  // Restore main app elements when leaving module
+  try {
+    const sidebar = document.querySelector('.v-navigation-drawer')
+    const appBar = document.querySelector('.v-app-bar')
+    
+    if (sidebar) {
+      sidebar.style.display = ''
+    }
+    if (appBar) {
+      appBar.style.display = ''
+    }
+  } catch (error) {
+    console.log('Error restoring app elements:', error)
   }
 })
 </script>
@@ -281,6 +286,7 @@ onUnmounted(() => {
   z-index: 9999;
   overflow-y: auto;
 }
+
 .wireframe-module-header {
   background: #f0f0f0;
   border-bottom: 2px solid #000;
@@ -303,20 +309,16 @@ onUnmounted(() => {
 .wireframe-back-button {
   background: white;
   border: 2px solid #000;
+  color: black;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
-  color: black;
-  font-size: 14px;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
 .wireframe-back-button:hover {
   background: #f0f0f0;
-  transform: translateY(-1px);
 }
 
 .wireframe-module-progress {
@@ -328,54 +330,46 @@ onUnmounted(() => {
 .wireframe-progress-bar {
   width: 200px;
   height: 8px;
-  background: #f0f0f0;
+  background: #e0e0e0;
+  border: 1px solid #000;
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid #000;
 }
 
 .wireframe-progress-fill {
   height: 100%;
-  background: #f0f0f0;
+  background: #000;
   transition: width 0.3s ease;
 }
 
 .wireframe-progress-text {
-  font-size: 14px;
+  font-size: 12px;
+  color: #666;
   font-weight: 600;
-  color: black;
+}
+
+.wireframe-module-title-section {
+  text-align: left;
 }
 
 .wireframe-program-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #666;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.wireframe-module-title {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   color: black;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
-.wireframe-module-subtitle {
+.wireframe-program-description {
   font-size: 16px;
   color: #666;
   line-height: 1.5;
+  margin-bottom: 12px;
 }
 
 .wireframe-program-objective {
   font-size: 14px;
-  color: black;
-  margin-top: 12px;
-  padding: 12px;
-  background: #f0f0f0;
-  border: 2px solid #000;
-  border-radius: 4px;
+  color: #333;
+  line-height: 1.4;
 }
 
 .wireframe-module-layout {
@@ -391,25 +385,28 @@ onUnmounted(() => {
   border-radius: 4px;
   padding: 20px;
   background: white;
-  height: fit-content;
+  overflow-y: auto;
 }
 
 .wireframe-sidebar-header {
-  border-bottom: 2px solid #000;
-  padding-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #000;
 }
 
 .wireframe-sidebar-title {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   color: black;
-  margin-bottom: 8px;
 }
 
 .wireframe-sidebar-progress {
-  font-size: 14px;
+  font-size: 12px;
   color: #666;
+  font-weight: 600;
 }
 
 .wireframe-sidebar-sections {
@@ -422,42 +419,34 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   padding: 12px;
-  margin-bottom: 8px;
   border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
   background: white;
+  transition: all 0.2s ease;
 }
 
 .wireframe-sidebar-item:hover {
   background: #f0f0f0;
-  border-color: #000;
 }
 
-.wireframe-sidebar-item.wireframe-sidebar-completed {
-  background: #f0f0f0;
-  border-color: #000;
-}
-
-.wireframe-sidebar-item.wireframe-sidebar-current {
-  background: #f0f0f0;
-  border-color: #000;
-  font-weight: bold;
+.wireframe-sidebar-active {
+  background: #e0e0e0;
+  font-weight: 700;
 }
 
 .wireframe-sidebar-icon {
   width: 24px;
   height: 24px;
+  border: 2px solid #000;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 12px;
+  font-size: 12px;
   font-weight: 700;
-  color: black;
+  margin-right: 12px;
   background: white;
-  border: 1px solid #000;
-  border-radius: 50%;
 }
 
 .wireframe-sidebar-content {
@@ -474,6 +463,35 @@ onUnmounted(() => {
 .wireframe-sidebar-duration {
   font-size: 12px;
   color: #666;
+}
+
+.wireframe-module-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #000;
+}
+
+.wireframe-nav-button {
+  background: white;
+  border: 2px solid #000;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.wireframe-nav-button:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.wireframe-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .wireframe-module-content {
@@ -517,4 +535,66 @@ onUnmounted(() => {
   margin: 0;
 }
 
+.wireframe-examples {
+  margin-top: 24px;
+  padding: 20px;
+  border: 2px solid #000;
+  border-radius: 4px;
+  background: #f9f9f9;
+}
+
+.wireframe-examples h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: black;
+  margin-bottom: 16px;
+}
+
+.wireframe-example-item {
+  color: black;
+  font-weight: 600;
+  margin: 10px 0;
+  padding: 10px;
+  background: white;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
+
+.wireframe-section-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #000;
+}
+
+.wireframe-section-button {
+  background: white;
+  border: 2px solid #000;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.wireframe-section-button:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.wireframe-section-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wireframe-nav-prev {
+  margin-right: auto;
+}
+
+.wireframe-nav-next {
+  margin-left: auto;
+}
 </style>

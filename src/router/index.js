@@ -10,6 +10,9 @@ import CBTThoughtChallengingModule from '@/components/CBTThoughtChallengingModul
 import CBTBehavioralExperimentsModule from '@/components/CBTBehavioralExperimentsModule.vue'
 import CBTRelapsePreventionModule from '@/components/CBTRelapsePreventionModule.vue'
 import MindfulnessIntroductionModule from '@/components/MindfulnessIntroductionModule.vue'
+import MindfulnessBodyScanModule from '@/components/MindfulnessBodyScanModule.vue'
+import MindfulnessBreathingModule from '@/components/MindfulnessBreathingModule.vue'
+import MindfulnessMovementModule from '@/components/MindfulnessMovementModule.vue'
 import AnxietyUnderstandingModule from '@/components/AnxietyUnderstandingModule.vue'
 import TraumaUnderstandingModule from '@/components/TraumaUnderstandingModule.vue'
 import DepressionUnderstandingModule from '@/components/DepressionUnderstandingModule.vue'
@@ -65,19 +68,19 @@ const routes = [
     component: MindfulnessIntroductionModule
   },
   {
-    path: '/program/mindfulness--stress-reduction/module/understanding-anxiety',
-    name: 'Mindfulness Anxiety Understanding Module',
-    component: AnxietyUnderstandingModule
+    path: '/program/mindfulness--stress-reduction/module/body-scan-meditation',
+    name: 'Mindfulness Body Scan Module',
+    component: MindfulnessBodyScanModule
   },
   {
-    path: '/program/mindfulness--stress-reduction/module/understanding-trauma',
-    name: 'Mindfulness Trauma Understanding Module',
-    component: TraumaUnderstandingModule
+    path: '/program/mindfulness--stress-reduction/module/breathing-exercises',
+    name: 'Mindfulness Breathing Module',
+    component: MindfulnessBreathingModule
   },
   {
-    path: '/program/mindfulness--stress-reduction/module/understanding-depression',
-    name: 'Mindfulness Depression Understanding Module',
-    component: DepressionUnderstandingModule
+    path: '/program/mindfulness--stress-reduction/module/mindful-movement',
+    name: 'Mindfulness Movement Module',
+    component: MindfulnessMovementModule
   },
   {
     path: '/program/anxiety-management/module/understanding-anxiety',
