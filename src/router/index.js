@@ -174,11 +174,22 @@ const router = createRouter({
   routes
 })
 
-// Redirect to GitHub Pages URL when application is refreshed on GitHub Pages
+// Handle GitHub Pages redirect for SPA routing
 router.beforeEach((to, from, next) => {
-  // Only redirect if we're on GitHub Pages and not already on the correct URL
+  // Check if we're on GitHub Pages and handle the redirect
   if (window.location.hostname === 'sabrinadoornekamp.github.io') {
-    // Only redirect if not already on the correct path
+    // Handle the GitHub Pages redirect pattern
+    if (window.location.search.includes('?/')) {
+      const redirect = window.location.search.split('?/')[1]
+      if (redirect) {
+        const decodedRedirect = redirect.replace(/~and~/g, '&')
+        window.history.replaceState({}, '', decodedRedirect)
+        next()
+        return
+      }
+    }
+    
+    // Ensure we're on the correct base path
     if (!window.location.pathname.includes('/tl-wireframes/')) {
       window.location.href = 'https://sabrinadoornekamp.github.io/tl-wireframes/'
       return
