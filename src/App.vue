@@ -29,7 +29,8 @@ function handleResize() {
   isMobile.value = width < 768
   if (isMobile.value) {
     rail.value = false
-    drawer.value = false
+    // Don't automatically close drawer on mobile - let user control it
+    // drawer.value = false
   } else {
     drawer.value = true
   }
