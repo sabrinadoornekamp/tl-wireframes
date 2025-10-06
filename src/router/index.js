@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import DashboardContent from '@/components/DashboardContent.vue'
 import ProgramsQuestionnaires from '@/components/ProgramsQuestionnaires.vue'
 import ProgramDetail from '@/components/ProgramDetail.vue'
@@ -169,27 +169,24 @@ const routes = [
   }
 ]
 
+// Use hash routing for GitHub Pages to avoid 404 errors
+const isGitHubPages = window.location.hostname === 'sabrinadoornekamp.github.io'
 const router = createRouter({
-  history: createWebHistory('/tl-wireframes/'),
+  history: isGitHubPages ? createWebHashHistory() : createWebHistory('/tl-wireframes/'),
   routes
 })
 
 // Handle GitHub Pages redirect for SPA routing
 router.beforeEach((to, from, next) => {
-  // Check if we're on GitHub Pages and handle the redirect
+  // For GitHub Pages, ensure we're on the correct base path
   if (window.location.hostname === 'sabrinadoornekamp.github.io') {
-    // Handle the GitHub Pages redirect pattern
-    if (window.location.search.includes('?/')) {
-      const redirect = window.location.search.split('?/')[1]
-      if (redirect) {
-        const decodedRedirect = redirect.replace(/~and~/g, '&')
-        window.history.replaceState({}, '', decodedRedirect)
-        next()
-        return
-      }
+    // If using hash routing, no need for complex redirect logic
+    if (!isGitHubPages || window.location.hash) {
+      next()
+      return
     }
     
-    // Ensure we're on the correct base path
+    // Only redirect if not already on the correct path
     if (!window.location.pathname.includes('/tl-wireframes/')) {
       window.location.href = 'https://sabrinadoornekamp.github.io/tl-wireframes/'
       return
