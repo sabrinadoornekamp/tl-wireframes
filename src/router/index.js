@@ -171,27 +171,29 @@ const routes = [
 
 // Use hash routing for GitHub Pages to avoid 404 errors
 const isGitHubPages = window.location.hostname === 'sabrinadoornekamp.github.io'
+console.log('Router setup:', { 
+  hostname: window.location.hostname, 
+  isGitHubPages, 
+  currentPath: window.location.pathname,
+  currentHash: window.location.hash 
+})
+
 const router = createRouter({
   history: isGitHubPages ? createWebHashHistory() : createWebHistory('/tl-wireframes/'),
   routes
 })
 
-// Handle GitHub Pages redirect for SPA routing
+// Handle direct access to GitHub Pages URLs
 router.beforeEach((to, from, next) => {
-  // For GitHub Pages, ensure we're on the correct base path
-  if (window.location.hostname === 'sabrinadoornekamp.github.io') {
-    // If using hash routing, no need for complex redirect logic
-    if (!isGitHubPages || window.location.hash) {
-      next()
-      return
-    }
-    
-    // Only redirect if not already on the correct path
-    if (!window.location.pathname.includes('/tl-wireframes/')) {
-      window.location.href = 'https://sabrinadoornekamp.github.io/tl-wireframes/'
-      return
-    }
+  console.log('Router navigation:', { to: to.path, from: from.path, hostname: window.location.hostname })
+  
+  // If on GitHub Pages and trying to access a path that doesn't exist, redirect to hash version
+  if (isGitHubPages && to.matched.length === 0) {
+    console.log('No route matched, redirecting to hash version')
+    window.location.href = window.location.origin + window.location.pathname + '#' + to.path
+    return
   }
+  
   next()
 })
 
