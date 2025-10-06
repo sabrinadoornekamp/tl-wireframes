@@ -24,9 +24,32 @@
       </div>
     </div>
 
+    <!-- Mobile Module Navigation (Horizontal) -->
+    <div class="wireframe-mobile-nav">
+      <div class="wireframe-mobile-nav-header">
+        <div class="wireframe-mobile-nav-title">Anger Management Program Modules</div>
+        <div class="wireframe-mobile-nav-progress">{{ Object.keys(allModules).indexOf(activeModule) + 1 }}/{{ Object.keys(allModules).length }}</div>
+      </div>
+      
+      <div class="wireframe-mobile-nav-items">
+        <div 
+          v-for="(module, moduleSlug, index) in allModules" 
+          :key="moduleSlug"
+          :class="['wireframe-mobile-nav-item', { 'wireframe-mobile-nav-active': activeModule === moduleSlug }]"
+          @click="navigateToModule(moduleSlug)"
+        >
+          <div class="wireframe-mobile-nav-icon">{{ index + 1 }}</div>
+          <div class="wireframe-mobile-nav-content">
+            <div class="wireframe-mobile-nav-title">{{ module.title }}</div>
+            <div class="wireframe-mobile-nav-duration">{{ module.duration }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Content Layout -->
     <div class="wireframe-module-layout">
-      <!-- Sidebar Navigation -->
+      <!-- Desktop Sidebar Navigation -->
       <div class="wireframe-module-sidebar">
         <div class="wireframe-sidebar-header">
           <div class="wireframe-sidebar-title">Anger Management Modules</div>
@@ -283,12 +306,118 @@ onUnmounted(() => {
   margin: 0 auto;
 }
 
+/* Mobile Module Navigation */
+.wireframe-mobile-nav {
+  display: none;
+  border: 2px solid #000;
+  border-radius: 4px;
+  padding: 16px;
+  background: white;
+  margin: 0 16px 16px 16px;
+}
+
+.wireframe-mobile-nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.wireframe-mobile-nav-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: black;
+}
+
+.wireframe-mobile-nav-progress {
+  font-size: 12px;
+  color: #666;
+}
+
+.wireframe-mobile-nav-items {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.wireframe-mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.wireframe-mobile-nav-item:hover {
+  background-color: #e0e0e0;
+}
+
+.wireframe-mobile-nav-active {
+  background-color: #d0d0d0;
+  border-color: #000;
+}
+
+.wireframe-mobile-nav-icon {
+  font-size: 14px;
+  font-weight: 700;
+  color: black;
+}
+
+.wireframe-mobile-nav-content {
+  flex-grow: 1;
+}
+
+.wireframe-mobile-nav-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: black;
+  line-height: 1.2;
+}
+
+.wireframe-mobile-nav-duration {
+  font-size: 10px;
+  color: #666;
+}
+
 .wireframe-module-layout {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 24px;
   height: calc(100vh - 140px);
   padding: 24px;
+}
+
+/* Mobile responsive layout */
+@media (max-width: 768px) {
+  .wireframe-mobile-nav {
+    display: block;
+  }
+  
+  .wireframe-module-sidebar {
+    display: none;
+  }
+  
+  .wireframe-module-layout {
+    display: block;
+    grid-template-columns: none;
+    height: auto;
+    padding: 16px;
+    gap: 0;
+  }
+  
+  .wireframe-module-content {
+    width: 100%;
+    margin: 0;
+  }
 }
 
 .wireframe-module-sidebar {
