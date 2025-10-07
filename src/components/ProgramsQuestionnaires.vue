@@ -399,13 +399,14 @@ const recentActivity = [
 }
 
 .wireframe-button-primary {
-  background: #333;
-  color: white;
+  background: #f0f0f0;
+  color: #333;
+  border-color: #666;
 }
 
 .wireframe-button-primary:hover {
-  background: #666;
-  border-color: #666;
+  background: #e0e0e0;
+  border-color: #333;
 }
 
 .wireframe-button-secondary {
