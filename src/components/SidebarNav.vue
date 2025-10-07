@@ -26,8 +26,16 @@
   >
     <div class="wireframe-sidebar-content">
       <div>
+        <!-- Mobile Navigation Header -->
+        <div v-if="isMobile && mobileCurrentLevel > 0" class="wireframe-mobile-header">
+          <button @click="goBackLevel" class="wireframe-back-button">
+            <div class="wireframe-icon">←</div>
+            <div class="wireframe-label">Back</div>
+          </button>
+        </div>
 
-        <div class="wireframe-menu">
+        <!-- Level 0: Main Menu -->
+        <div v-if="!isMobile || mobileCurrentLevel === 0" class="wireframe-menu">
           <!-- Dashboard -->
           <div
             class="wireframe-menu-item"
@@ -47,10 +55,11 @@
             <div class="wireframe-icon" style="min-width: 24px;"></div>
             <div v-if="!rail" class="wireframe-label">My therapieland</div>
             <div v-if="!rail" class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedSubmenu }"></div>
+            <div v-if="isMobile" class="wireframe-arrow">→</div>
           </div>
           
-          <!-- Submenu for My therapieland -->
-          <div v-if="!rail && expandedSubmenu" class="wireframe-submenu">
+          <!-- Desktop: Submenu for My therapieland -->
+          <div v-if="!rail && expandedSubmenu && !isMobile" class="wireframe-submenu">
             <!-- Monitors -->
             <div
               class="wireframe-submenu-item"
@@ -129,6 +138,66 @@
             <div v-if="!rail" class="wireframe-label">Settings</div>
           </div>
         </div>
+
+        <!-- Level 1: My therapieland Submenu (Mobile) -->
+        <div v-if="isMobile && mobileCurrentLevel === 1" class="wireframe-menu">
+          <!-- Monitors -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'Monitors' }"
+            @click="handleSubmenuClick({ title: 'Monitors' })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">Monitors</div>
+          </div>
+          
+          <!-- Programs & questionnaires -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'Programs & questionnaires' }"
+            @click="handleSubmenuClick({ title: 'Programs & questionnaires', hasSubmenu: true })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">Programs & questionnaires</div>
+            <div class="wireframe-arrow">→</div>
+          </div>
+          
+          <!-- Library -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'Library' }"
+            @click="handleSubmenuClick({ title: 'Library' })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">Library</div>
+          </div>
+        </div>
+
+        <!-- Level 2: Programs Submenu (Mobile) -->
+        <div v-if="isMobile && mobileCurrentLevel === 2" class="wireframe-menu">
+          <div
+            v-for="program in programsSubmenu"
+            :key="program.title"
+            class="wireframe-menu-item wireframe-program-item"
+            :class="{ 'wireframe-active': active === program.title }"
+            @click="handleProgramClick(program)"
+          >
+            <div class="wireframe-icon" style="min-width: 20px;"></div>
+            <div class="wireframe-program-content">
+              <div class="wireframe-label">{{ program.title }}</div>
+              <div class="wireframe-program-progress">
+                <div class="wireframe-progress-track">
+                  <div 
+                    class="wireframe-progress-fill" 
+                    :style="{ width: program.progress + '%' }"
+                    :class="program.status"
+                  ></div>
+                </div>
+                <div class="wireframe-progress-text">{{ program.progress }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div>
@@ -184,6 +253,10 @@ const expandedSubmenu = ref(false)
 const expandedProgramsSubmenu = ref(false)
 const userManuallyCollapsedPrograms = ref(false)
 
+// Mobile navigation state
+const mobileCurrentLevel = ref(0) // 0 = main menu, 1 = therapieland submenu, 2 = programs submenu
+const mobileNavigationStack = ref([]) // Track navigation history
+
 // Update active state based on current route
 const updateActiveState = () => {
   if (route.path === '/') {
@@ -212,18 +285,26 @@ watch(() => route.path, updateActiveState, { immediate: true })
 
 const handleMenuClick = (item) => {
   if (item.submenu) {
-    // Toggle submenu
-    expandedSubmenu.value = !expandedSubmenu.value
-    // Also navigate to the overview page when clicking My therapieland
-    if (item.title === 'My therapieland') {
+    if (props.isMobile) {
+      // On mobile, navigate to submenu level
+      navigateToLevel(1, item.title)
       active.value = item.title
       router.push('/my-therapieland')
+    } else {
+      // Desktop behavior - toggle submenu
+      expandedSubmenu.value = !expandedSubmenu.value
+      // Also navigate to the overview page when clicking My therapieland
+      if (item.title === 'My therapieland') {
+        active.value = item.title
+        router.push('/my-therapieland')
+      }
     }
   } else {
     // Regular menu item - navigate to route
     active.value = item.title
-    // Don't close submenu - keep it open
-    // expandedSubmenu.value = false
+    if (props.isMobile) {
+      resetMobileNavigation()
+    }
     
     // Navigate based on menu item
     if (item.title === 'Dashboard') {
@@ -240,31 +321,33 @@ const handleMenuClick = (item) => {
 
 const handleSubmenuClick = (subItem) => {
   if (subItem.hasSubmenu) {
-    // Toggle the submenu (allow manual collapse/expand)
-    if (subItem.title === 'Programs & questionnaires') {
-      expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
-      // Track if user manually collapsed the submenu
-      if (!expandedProgramsSubmenu.value) {
-        userManuallyCollapsedPrograms.value = true
-      } else {
-        userManuallyCollapsedPrograms.value = false
-        active.value = subItem.title
-        router.push('/programs-questionnaires')
-      }
+    if (props.isMobile) {
+      // On mobile, navigate to programs submenu level
+      navigateToLevel(2, subItem.title)
+      active.value = subItem.title
+      router.push('/programs-questionnaires')
     } else {
-      // Toggle other submenus
-      expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
+      // Desktop behavior - toggle the submenu (allow manual collapse/expand)
+      if (subItem.title === 'Programs & questionnaires') {
+        expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
+        // Track if user manually collapsed the submenu
+        if (!expandedProgramsSubmenu.value) {
+          userManuallyCollapsedPrograms.value = true
+        } else {
+          userManuallyCollapsedPrograms.value = false
+          active.value = subItem.title
+          router.push('/programs-questionnaires')
+        }
+      } else {
+        // Toggle other submenus
+        expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
+      }
     }
   } else {
     active.value = subItem.title
-    // Don't close submenus - keep them open
-    // expandedSubmenu.value = false
-    // expandedProgramsSubmenu.value = false
-    
-    // Keep drawer open on mobile/tablet when navigating to submenu items
     if (props.isMobile) {
-      // Don't close drawer on mobile when navigating to submenu items
-      console.log('Mobile: Keeping drawer open for submenu navigation')
+      // On mobile, navigate to the page and reset navigation
+      resetMobileNavigation()
     }
     
     // Navigate based on submenu item
@@ -306,6 +389,28 @@ const handleProgramClick = (program) => {
   
   const programId = programRouteMap[program.title] || program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')
   router.push(`/program/${programId}`)
+}
+
+// Mobile navigation functions
+const navigateToLevel = (level, title) => {
+  if (props.isMobile) {
+    mobileNavigationStack.value.push({ level: mobileCurrentLevel.value, title: title })
+    mobileCurrentLevel.value = level
+    console.log('Mobile: Navigated to level', level, 'Title:', title)
+  }
+}
+
+const goBackLevel = () => {
+  if (props.isMobile && mobileNavigationStack.value.length > 0) {
+    const previousState = mobileNavigationStack.value.pop()
+    mobileCurrentLevel.value = previousState.level
+    console.log('Mobile: Went back to level', previousState.level)
+  }
+}
+
+const resetMobileNavigation = () => {
+  mobileCurrentLevel.value = 0
+  mobileNavigationStack.value = []
 }
 const search = ref('')
 const avatarSrc = 'https://s3-alpha-sig.figma.com/img/8242/5855/478e145e1b8ec85651a72ac2891dc900?Expires=1760313600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=cJJcQryNGMT19zTyRiISngKrQx~HXyqZyXTUaMT0xJgIfh49hFR-qhRi0QVZykig-HK~9ofittBgGTllDgbmRmf2Dqyag0WZzBRlbPY9Tn~F3Yq88gvIkQGOmeRTb0YHE0pxELIaSjVFAaJbGd80y-1nUecID6wSvl-ybZQBXR8MerEg0dLcRq9rgaOlgGh6sbQxCgqiAJKkiwJWtOfGH8TQgW77m6X9puGXYRIWWuirYJKTw6T3Xz-ABmEKXzFDcbyvpC-hpGiuZHE~qQHBxhl1HwYKudeUXz56rKuNgP64EP0x3Jlers7R2ewesKI-vHPW1aoI04bpdfABsA2AfQ__'
@@ -608,6 +713,38 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   }
 }
 
+/* Mobile Navigation Header */
+.wireframe-mobile-header {
+  border-bottom: 2px solid #333;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.wireframe-mobile-header .wireframe-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  color: #333;
+}
+
+.wireframe-mobile-header .wireframe-back-button:hover {
+  background: #f0f0f0;
+  border-color: #666;
+}
+
+.wireframe-mobile-header .wireframe-back-button:active {
+  transform: scale(0.97);
+  background: #e0e0e0;
+}
+
 /* Mobile: < 768px */
 @media (max-width: 767px) {
   .wireframe-sidebar-content {
@@ -634,6 +771,14 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   
   .wireframe-programs-submenu {
     margin-left: 12px !important;
+  }
+  
+  /* Mobile arrow styling */
+  .wireframe-menu-item .wireframe-arrow {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    margin-left: auto !important;
   }
   
   /* Better touch targets for mobile */
