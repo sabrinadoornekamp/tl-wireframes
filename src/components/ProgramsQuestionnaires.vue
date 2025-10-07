@@ -673,6 +673,16 @@ const recentActivity = [
   gap: 16px;
 }
 
+/* Mobile: vertical positioning for activity items */
+@media (max-width: 767px) {
+  .wireframe-activity-item {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 12px;
+  }
+}
+
 .wireframe-activity-icon {
   width: 24px;
   height: 24px;

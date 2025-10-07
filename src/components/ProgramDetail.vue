@@ -987,6 +987,17 @@ const getModuleStatus = (module) => {
   padding: 12px;
 }
 
+/* Mobile: vertical positioning for activity items */
+@media (max-width: 767px) {
+  .wireframe-activity-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 8px;
+  }
+}
+
 .wireframe-activity-item.wireframe-activity-completed {
   border-color: #4CAF50;
   background: #f0f8f0;

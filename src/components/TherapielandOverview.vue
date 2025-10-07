@@ -516,6 +516,16 @@ const contactCareProvider = () => {
   gap: 16px;
 }
 
+/* Mobile: vertical positioning for activity items */
+@media (max-width: 767px) {
+  .wireframe-activity-item {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 12px;
+  }
+}
+
 .wireframe-activity-item.program {
   background: #f0f8f0;
   border-color: #4CAF50;
