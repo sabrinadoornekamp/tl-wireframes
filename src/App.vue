@@ -29,8 +29,7 @@ function handleResize() {
   isMobile.value = width < 768
   if (isMobile.value) {
     rail.value = false
-    // Don't automatically close drawer on mobile - let user control it
-    // drawer.value = false
+    drawer.value = false // Start closed on mobile so toggle works
   } else {
     drawer.value = true
   }
@@ -38,7 +37,9 @@ function handleResize() {
 
 function toggleDrawer() {
   if (isMobile.value) {
+    // Force toggle on mobile - ensure it works
     drawer.value = !drawer.value
+    console.log('Mobile drawer toggled:', drawer.value)
   } else {
     rail.value = !rail.value
   }
@@ -62,9 +63,17 @@ watch(() => route.path, (newPath) => {
   }
 }, { immediate: true })
 
+// Watch drawer state changes for debugging
+watch(drawer, (newValue) => {
+  console.log('Drawer state changed:', newValue, 'isMobile:', isMobile.value)
+})
+
 onMounted(() => {
   handleResize()
   window.addEventListener('resize', handleResize)
+  
+  // Debug drawer state
+  console.log('App mounted - drawer state:', drawer.value, 'isMobile:', isMobile.value)
   
   // Ensure sidebar and app bar are visible on app mount
   const sidebar = document.querySelector('.v-navigation-drawer')
