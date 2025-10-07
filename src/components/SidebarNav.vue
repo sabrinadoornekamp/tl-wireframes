@@ -152,6 +152,8 @@ const props = defineProps({
   isMobile: { type: Boolean, default: false },
 })
 
+const emit = defineEmits(['update:drawer'])
+
 const router = useRouter()
 const route = useRoute()
 
@@ -259,6 +261,12 @@ const handleSubmenuClick = (subItem) => {
     // expandedSubmenu.value = false
     // expandedProgramsSubmenu.value = false
     
+    // Keep drawer open on mobile/tablet when navigating to submenu items
+    if (props.isMobile) {
+      // Don't close drawer on mobile when navigating to submenu items
+      console.log('Mobile: Keeping drawer open for submenu navigation')
+    }
+    
     // Navigate based on submenu item
     if (subItem.title === 'Programs & questionnaires') {
       router.push('/programs-questionnaires')
@@ -278,6 +286,12 @@ const handleProgramClick = (program) => {
   // Don't close submenus - keep them open
   // expandedSubmenu.value = false
   // expandedProgramsSubmenu.value = false
+  
+  // Keep drawer open on mobile/tablet when navigating to programs
+  if (props.isMobile) {
+    // Don't close drawer on mobile when navigating to programs
+    console.log('Mobile: Keeping drawer open for program navigation')
+  }
   
   // Navigate to specific program detail page
   // Map program titles to their correct route IDs

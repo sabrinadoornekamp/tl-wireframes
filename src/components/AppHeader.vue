@@ -1,6 +1,11 @@
 <template>
   <v-app-bar app flat class="wireframe-app-bar">
-    <v-btn icon class="mr-2" @click="$emit('toggle-drawer')">
+    <v-btn 
+      icon 
+      class="mr-2 wireframe-menu-button" 
+      @click="handleMenuClick"
+      :disabled="isToggling"
+    >
       <v-icon>mdi-menu</v-icon>
     </v-btn>
     <v-toolbar-title>Therapieland</v-toolbar-title>
@@ -15,7 +20,22 @@
 </template>
 
 <script setup>
-defineEmits(['toggle-drawer'])
+import { ref } from 'vue'
+
+const emit = defineEmits(['toggle-drawer'])
+const isToggling = ref(false)
+
+const handleMenuClick = () => {
+  if (isToggling.value) return
+  
+  isToggling.value = true
+  emit('toggle-drawer')
+  
+  // Prevent double-click by disabling briefly
+  setTimeout(() => {
+    isToggling.value = false
+  }, 300)
+}
 </script>
 
 <style scoped>
@@ -37,6 +57,17 @@ defineEmits(['toggle-drawer'])
   border-bottom: 2px solid #333 !important;
   border-left: 2px solid #333 !important;
   border-right: 2px solid #333 !important;
+}
+
+/* Menu button touch handling */
+.wireframe-menu-button {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+  touch-action: manipulation !important;
+  user-select: none !important;
+}
+
+.wireframe-menu-button:active {
+  transform: scale(0.95) !important;
 }
 </style>
 
