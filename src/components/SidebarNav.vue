@@ -58,7 +58,7 @@
           </div>
           
           <!-- Desktop: My therapieland (clickable to toggle submenu) -->
-          <div 
+          <div
             v-if="!isMobile"
             class="wireframe-menu-item"
             :class="{ 'wireframe-active': active === 'My therapieland' }"
@@ -92,29 +92,29 @@
             </div>
             
             
-            <!-- Programs & Questionnaires -->
+            <!-- All assignments -->
             <div
               class="wireframe-submenu-item"
-              :class="{ 'wireframe-active': active === 'Programs & Questionnaires' }"
-              @click="handleSubmenuClick({ title: 'Programs & Questionnaires', hasSubmenu: true })"
+              :class="{ 'wireframe-active': active === 'All assignments' }"
+              @click="handleSubmenuClick({ title: 'All assignments' })"
             >
               <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
-              <div class="wireframe-label">Programs & Questionnaires</div>
-              <div class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedProgramsQuestionnaires }"></div>
+              <div class="wireframe-label">All assignments</div>
             </div>
             
-            <!-- Programs & Questionnaires submenu - positioned directly under Programs & Questionnaires -->
-            <div v-if="expandedProgramsQuestionnaires" class="wireframe-programs-submenu">
-              <!-- All assignments -->
-              <div
-                class="wireframe-submenu-item"
-                :class="{ 'wireframe-active': active === 'All assignments' }"
-                @click="handleSubmenuClick({ title: 'All assignments' })"
-              >
-                <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
-                <div class="wireframe-label">All assignments</div>
-              </div>
-              
+            <!-- Programs -->
+            <div
+              class="wireframe-submenu-item"
+              :class="{ 'wireframe-active': active === 'Programs' }"
+              @click="handleSubmenuClick({ title: 'Programs', hasSubmenu: true })"
+            >
+              <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
+              <div class="wireframe-label">Programs</div>
+              <div class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedPrograms }"></div>
+            </div>
+            
+            <!-- Programs submenu - positioned directly under Programs -->
+            <div v-if="expandedPrograms" class="wireframe-programs-submenu">
               <!-- Individual Programs -->
               <div
                 v-for="program in programsSubmenu"
@@ -225,14 +225,24 @@
             <div class="wireframe-label">Monitors</div>
           </div>
           
-          <!-- Programs & Questionnaires -->
+          <!-- All assignments -->
           <div
             class="wireframe-menu-item"
-            :class="{ 'wireframe-active': active === 'Programs & Questionnaires' }"
-            @click="handleSubmenuClick({ title: 'Programs & Questionnaires', hasSubmenu: true })"
+            :class="{ 'wireframe-active': active === 'All assignments' }"
+            @click="handleSubmenuClick({ title: 'All assignments' })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div class="wireframe-label">Programs & Questionnaires</div>
+            <div class="wireframe-label">All assignments</div>
+          </div>
+          
+          <!-- Programs -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'Programs' }"
+            @click="handleSubmenuClick({ title: 'Programs', hasSubmenu: true })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">Programs</div>
             <div class="wireframe-arrow wireframe-arrow-right">→</div>
           </div>
           
@@ -258,18 +268,8 @@
           </div>
         </div>
 
-        <!-- Level 2: Programs & Questionnaires Submenu (Mobile) -->
+        <!-- Level 2: Programs Submenu (Mobile) -->
         <div v-if="isMobile && mobileCurrentLevel === 2" class="wireframe-menu">
-          <!-- All assignments -->
-          <div
-            class="wireframe-menu-item"
-            :class="{ 'wireframe-active': active === 'All assignments' }"
-            @click="handleSubmenuClick({ title: 'All assignments' })"
-          >
-            <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div class="wireframe-label">All assignments</div>
-          </div>
-          
           <!-- Individual Programs -->
           <div
             v-for="program in programsSubmenu"
@@ -375,8 +375,7 @@ const questionnairesSubmenu = [
 
 const active = ref('Dashboard')
 const expandedSubmenu = ref(false)
-const expandedProgramsSubmenu = ref(false)
-const expandedProgramsQuestionnaires = ref(false)
+const expandedPrograms = ref(false)
 const expandedQuestionnaires = ref(false)
 const userManuallyCollapsedPrograms = ref(false)
 
@@ -389,21 +388,33 @@ const updateActiveState = () => {
   if (route.path === '/') {
     active.value = 'Dashboard'
     expandedSubmenu.value = false
-    expandedProgramsSubmenu.value = false
-    userManuallyCollapsedPrograms.value = false // Reset manual collapse flag
+    expandedPrograms.value = false
+    expandedQuestionnaires.value = false
+    userManuallyCollapsedPrograms.value = false
   } else if (route.path === '/my-therapieland') {
     active.value = 'My therapieland'
     expandedSubmenu.value = true
-    expandedProgramsSubmenu.value = false
-    userManuallyCollapsedPrograms.value = false // Reset manual collapse flag
-  } else if (route.path === '/programs-questionnaires' || route.path.includes('/program/') || route.path.includes('/questionnaire/')) {
-    active.value = 'Programs & questionnaires'
+    expandedPrograms.value = false
+    expandedQuestionnaires.value = false
+    userManuallyCollapsedPrograms.value = false
+  } else if (route.path === '/all-assignments') {
+    active.value = 'All assignments'
     expandedSubmenu.value = true
-    // Auto-expand programs submenu when navigating to program pages
-    // But only if user hasn't manually collapsed it
-    if (!userManuallyCollapsedPrograms.value) {
-      expandedProgramsSubmenu.value = true
-    }
+    expandedPrograms.value = false
+    expandedQuestionnaires.value = false
+    userManuallyCollapsedPrograms.value = false
+  } else if (route.path.includes('/program/')) {
+    active.value = 'Programs'
+    expandedSubmenu.value = true
+    expandedPrograms.value = true
+    expandedQuestionnaires.value = false
+    userManuallyCollapsedPrograms.value = false
+  } else if (route.path.includes('/questionnaire/')) {
+    active.value = 'Questionnaires'
+    expandedSubmenu.value = true
+    expandedPrograms.value = false
+    expandedQuestionnaires.value = true
+    userManuallyCollapsedPrograms.value = false
   }
 }
 
@@ -421,7 +432,7 @@ const handleMenuClick = (item) => {
     } else {
       // Desktop behavior - toggle submenu
       if (item.title === 'My therapieland') {
-        expandedSubmenu.value = !expandedSubmenu.value
+    expandedSubmenu.value = !expandedSubmenu.value
       }
       active.value = item.title
       console.log('Desktop: Toggling submenu for:', item.title)
@@ -450,7 +461,7 @@ const handleSubmenuClick = (subItem) => {
   if (subItem.hasSubmenu) {
     if (props.isMobile) {
       // On mobile, navigate to appropriate submenu level
-      if (subItem.title === 'Programs & Questionnaires') {
+      if (subItem.title === 'Programs') {
         navigateToLevel(2, subItem.title)
       } else if (subItem.title === 'Questionnaires') {
         navigateToLevel(3, subItem.title)
@@ -458,10 +469,10 @@ const handleSubmenuClick = (subItem) => {
       // Don't navigate to a page, just show submenu
     } else {
       // Desktop behavior - toggle the submenu (allow manual collapse/expand)
-      if (subItem.title === 'Programs & Questionnaires') {
-        expandedProgramsQuestionnaires.value = !expandedProgramsQuestionnaires.value
+      if (subItem.title === 'Programs') {
+        expandedPrograms.value = !expandedPrograms.value
         // Track if user manually collapsed the submenu
-        if (!expandedProgramsQuestionnaires.value) {
+        if (!expandedPrograms.value) {
           userManuallyCollapsedPrograms.value = true
         } else {
           userManuallyCollapsedPrograms.value = false
@@ -470,7 +481,7 @@ const handleSubmenuClick = (subItem) => {
         expandedQuestionnaires.value = !expandedQuestionnaires.value
       } else {
         // Toggle other submenus
-        expandedProgramsQuestionnaires.value = !expandedProgramsQuestionnaires.value
+        expandedPrograms.value = !expandedPrograms.value
       }
     }
   } else {
