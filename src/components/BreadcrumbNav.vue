@@ -30,40 +30,105 @@ const router = useRouter()
 const breadcrumbs = computed(() => {
   const crumbs = []
   
-  // Current route
-  
-  // Add My therapieland if we're on that page
-  if (route.path === '/my-therapieland') {
+  // Handle My therapieland submenu pages
+  if (route.path === '/my-progress') {
     crumbs.push({
       text: 'My therapieland',
       path: '/my-therapieland',
       icon: '🏠'
     })
-  }
-  
-  // Add Programs & Questionnaires if we're on that page or a sub-page
-  if (route.path.includes('/programs-questionnaires') || route.path.includes('/program/') || route.path.includes('/questionnaire/')) {
     crumbs.push({
-      text: 'Programs & Questionnaires',
-      path: '/programs-questionnaires',
+      text: 'My progress',
+      path: '/my-progress',
+      icon: '📊'
+    })
+  } else if (route.path === '/all-assignments') {
+    crumbs.push({
+      text: 'My therapieland',
+      path: '/my-therapieland',
+      icon: '🏠'
+    })
+    crumbs.push({
+      text: 'All assignments',
+      path: '/all-assignments',
       icon: '📋'
     })
-  }
-  
-  // Add specific program/questionnaire if we're on a detail page
-  if (route.path.includes('/program/')) {
-    const programId = route.params.id
-    const programName = getProgramName(programId)
+  } else if (route.path === '/library') {
     crumbs.push({
-      text: programName,
-      path: route.path,
-      icon: '🎯'
+      text: 'My therapieland',
+      path: '/my-therapieland',
+      icon: '🏠'
+    })
+    crumbs.push({
+      text: 'Library',
+      path: '/library',
+      icon: '📚'
+    })
+  } else if (route.path === '/monitors') {
+    crumbs.push({
+      text: 'My therapieland',
+      path: '/my-therapieland',
+      icon: '🏠'
+    })
+    crumbs.push({
+      text: 'Monitors',
+      path: '/monitors',
+      icon: '📈'
     })
   }
   
+  // Handle program pages
+  if (route.path.includes('/program/')) {
+    // Extract program ID from path
+    const pathParts = route.path.split('/')
+    const programIndex = pathParts.indexOf('program')
+    if (programIndex !== -1 && pathParts[programIndex + 1]) {
+      const programId = pathParts[programIndex + 1]
+      const programName = getProgramName(programId)
+      
+      crumbs.push({
+        text: 'My therapieland',
+        path: '/my-therapieland',
+        icon: '🏠'
+      })
+      crumbs.push({
+        text: 'All assignments',
+        path: '/all-assignments',
+        icon: '📋'
+      })
+      crumbs.push({
+        text: programName,
+        path: `/program/${programId}`,
+        icon: '🎯'
+      })
+      
+      // Add module if we're on a module page
+      if (pathParts.length > programIndex + 3 && pathParts[programIndex + 2] === 'module') {
+        const moduleName = getModuleName(pathParts[programIndex + 3])
+        crumbs.push({
+          text: moduleName,
+          path: route.path,
+          icon: '📖'
+        })
+      }
+    }
+  }
+  
+  // Handle questionnaire pages
   if (route.path.includes('/questionnaire/')) {
     const questionnaireId = route.params.id
     const questionnaireName = getQuestionnaireName(questionnaireId)
+    
+    crumbs.push({
+      text: 'My therapieland',
+      path: '/my-therapieland',
+      icon: '🏠'
+    })
+    crumbs.push({
+      text: 'All assignments',
+      path: '/all-assignments',
+      icon: '📋'
+    })
     crumbs.push({
       text: questionnaireName,
       path: route.path,
@@ -77,13 +142,35 @@ const breadcrumbs = computed(() => {
 const getProgramName = (programId) => {
   const programNames = {
     'cognitive-behavioral-therapy': 'Cognitive Behavioral Therapy',
-    'mindfulness-stress-reduction': 'Mindfulness & Stress Reduction',
+    'mindfulness--stress-reduction': 'Mindfulness & Stress Reduction',
     'trauma-recovery-program': 'Trauma Recovery Program',
     'depression-treatment-program': 'Depression Treatment Program',
     'social-skills-training': 'Social Skills Training',
     'anger-management-program': 'Anger Management Program'
   }
   return programNames[programId] || 'Program'
+}
+
+const getModuleName = (moduleId) => {
+  const moduleNames = {
+    'introduction-to-cbt': 'Introduction to CBT',
+    'identifying-negative-thoughts': 'Identifying Negative Thoughts',
+    'thought-challenging-techniques': 'Thought Challenging Techniques',
+    'behavioral-experiments': 'Behavioral Experiments',
+    'relapse-prevention': 'Relapse Prevention',
+    'introduction-to-mindfulness': 'Introduction to Mindfulness',
+    'body-scan-meditation': 'Body Scan Meditation',
+    'breathing-exercises': 'Breathing Exercises',
+    'mindful-movement': 'Mindful Movement',
+    'understanding-anxiety': 'Understanding Anxiety',
+    'understanding-trauma': 'Understanding Trauma',
+    'understanding-depression': 'Understanding Depression',
+    'introduction-to-social-skills': 'Introduction to Social Skills',
+    'understanding-anger': 'Understanding Anger',
+    'anger-triggers': 'Anger Triggers',
+    'relaxation-techniques': 'Relaxation Techniques'
+  }
+  return moduleNames[moduleId] || 'Module'
 }
 
 const getQuestionnaireName = (questionnaireId) => {

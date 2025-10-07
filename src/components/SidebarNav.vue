@@ -46,20 +46,41 @@
             <div v-if="!rail" class="wireframe-label">Dashboard</div>
           </div>
           
-          <!-- My therapieland -->
-          <div
+          <!-- My therapieland (clickable on mobile) -->
+          <div 
+            v-if="isMobile"
+            class="wireframe-menu-item"
+            @click="handleMenuClick({ title: 'My therapieland', submenu: true })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">My therapieland</div>
+            <div class="wireframe-arrow wireframe-arrow-right">→</div>
+          </div>
+          
+          <!-- Desktop: My therapieland (clickable to toggle submenu) -->
+          <div 
+            v-if="!isMobile"
             class="wireframe-menu-item"
             :class="{ 'wireframe-active': active === 'My therapieland' }"
-            @click="handleMenuClick({ title: 'My therapieland', submenu: true, expanded: false })"
+            @click="handleMenuClick({ title: 'My therapieland', submenu: true })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
             <div v-if="!rail" class="wireframe-label">My therapieland</div>
             <div v-if="!rail" class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedSubmenu }"></div>
-            <div v-if="isMobile" class="wireframe-arrow">→</div>
           </div>
           
           <!-- Desktop: Submenu for My therapieland -->
           <div v-if="!rail && expandedSubmenu && !isMobile" class="wireframe-submenu">
+            <!-- My progress -->
+            <div
+              class="wireframe-submenu-item"
+              :class="{ 'wireframe-active': active === 'My progress' }"
+              @click="handleSubmenuClick({ title: 'My progress' })"
+            >
+              <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
+              <div class="wireframe-label">My progress</div>
+            </div>
+            
             <!-- Monitors -->
             <div
               class="wireframe-submenu-item"
@@ -70,19 +91,31 @@
               <div class="wireframe-label">Monitors</div>
             </div>
             
-            <!-- Programs & questionnaires -->
+            
+            <!-- Programs & Questionnaires -->
             <div
               class="wireframe-submenu-item"
-              :class="{ 'wireframe-active': active === 'Programs & questionnaires' }"
-              @click="handleSubmenuClick({ title: 'Programs & questionnaires', hasSubmenu: true })"
+              :class="{ 'wireframe-active': active === 'Programs & Questionnaires' }"
+              @click="handleSubmenuClick({ title: 'Programs & Questionnaires', hasSubmenu: true })"
             >
               <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
-              <div class="wireframe-label">Programs & questionnaires</div>
-              <div class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedProgramsSubmenu }"></div>
+              <div class="wireframe-label">Programs & Questionnaires</div>
+              <div class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedProgramsQuestionnaires }"></div>
             </div>
             
-            <!-- Programs submenu - positioned directly under Programs & questionnaires -->
-            <div v-if="expandedProgramsSubmenu" class="wireframe-programs-submenu">
+            <!-- Programs & Questionnaires submenu - positioned directly under Programs & Questionnaires -->
+            <div v-if="expandedProgramsQuestionnaires" class="wireframe-programs-submenu">
+              <!-- All assignments -->
+              <div
+                class="wireframe-submenu-item"
+                :class="{ 'wireframe-active': active === 'All assignments' }"
+                @click="handleSubmenuClick({ title: 'All assignments' })"
+              >
+                <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
+                <div class="wireframe-label">All assignments</div>
+              </div>
+              
+              <!-- Individual Programs -->
               <div
                 v-for="program in programsSubmenu"
                 :key="program.title"
@@ -141,6 +174,16 @@
 
         <!-- Level 1: My therapieland Submenu (Mobile) -->
         <div v-if="isMobile && mobileCurrentLevel === 1" class="wireframe-menu">
+          <!-- My progress -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'My progress' }"
+            @click="handleSubmenuClick({ title: 'My progress' })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">My progress</div>
+          </div>
+          
           <!-- Monitors -->
           <div
             class="wireframe-menu-item"
@@ -151,15 +194,15 @@
             <div class="wireframe-label">Monitors</div>
           </div>
           
-          <!-- Programs & questionnaires -->
+          <!-- Programs & Questionnaires -->
           <div
             class="wireframe-menu-item"
-            :class="{ 'wireframe-active': active === 'Programs & questionnaires' }"
-            @click="handleSubmenuClick({ title: 'Programs & questionnaires', hasSubmenu: true })"
+            :class="{ 'wireframe-active': active === 'Programs & Questionnaires' }"
+            @click="handleSubmenuClick({ title: 'Programs & Questionnaires', hasSubmenu: true })"
           >
             <div class="wireframe-icon" style="min-width: 24px;"></div>
-            <div class="wireframe-label">Programs & questionnaires</div>
-            <div class="wireframe-arrow">→</div>
+            <div class="wireframe-label">Programs & Questionnaires</div>
+            <div class="wireframe-arrow wireframe-arrow-right">→</div>
           </div>
           
           <!-- Library -->
@@ -173,8 +216,19 @@
           </div>
         </div>
 
-        <!-- Level 2: Programs Submenu (Mobile) -->
+        <!-- Level 2: Programs & Questionnaires Submenu (Mobile) -->
         <div v-if="isMobile && mobileCurrentLevel === 2" class="wireframe-menu">
+          <!-- All assignments -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'All assignments' }"
+            @click="handleSubmenuClick({ title: 'All assignments' })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">All assignments</div>
+          </div>
+          
+          <!-- Individual Programs -->
           <div
             v-for="program in programsSubmenu"
             :key="program.title"
@@ -234,8 +288,9 @@ const items = [
 ]
 
 const therapielandSubmenu = [
+  { title: 'My progress' },
   { title: 'Monitors' },
-  { title: 'Programs & questionnaires', hasSubmenu: true },
+  { title: 'All assignments', hasSubmenu: true },
   { title: 'Library' },
 ]
 
@@ -251,6 +306,7 @@ const programsSubmenu = [
 const active = ref('Dashboard')
 const expandedSubmenu = ref(false)
 const expandedProgramsSubmenu = ref(false)
+const expandedProgramsQuestionnaires = ref(false)
 const userManuallyCollapsedPrograms = ref(false)
 
 // Mobile navigation state
@@ -287,17 +343,17 @@ const handleMenuClick = (item) => {
   if (item.submenu) {
     if (props.isMobile) {
       // On mobile, navigate to submenu level
-      navigateToLevel(1, item.title)
-      active.value = item.title
-      router.push('/my-therapieland')
+      if (item.title === 'My therapieland') {
+        navigateToLevel(1, item.title)
+      }
+      console.log('Mobile: Navigating to submenu level for:', item.title)
     } else {
       // Desktop behavior - toggle submenu
-      expandedSubmenu.value = !expandedSubmenu.value
-      // Also navigate to the overview page when clicking My therapieland
       if (item.title === 'My therapieland') {
-        active.value = item.title
-        router.push('/my-therapieland')
+        expandedSubmenu.value = !expandedSubmenu.value
       }
+      active.value = item.title
+      console.log('Desktop: Toggling submenu for:', item.title)
     }
   } else {
     // Regular menu item - navigate to route
@@ -324,23 +380,20 @@ const handleSubmenuClick = (subItem) => {
     if (props.isMobile) {
       // On mobile, navigate to programs submenu level
       navigateToLevel(2, subItem.title)
-      active.value = subItem.title
-      router.push('/programs-questionnaires')
+      // Don't navigate to a page, just show submenu
     } else {
       // Desktop behavior - toggle the submenu (allow manual collapse/expand)
-      if (subItem.title === 'Programs & questionnaires') {
-        expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
+      if (subItem.title === 'Programs & Questionnaires') {
+        expandedProgramsQuestionnaires.value = !expandedProgramsQuestionnaires.value
         // Track if user manually collapsed the submenu
-        if (!expandedProgramsSubmenu.value) {
+        if (!expandedProgramsQuestionnaires.value) {
           userManuallyCollapsedPrograms.value = true
         } else {
           userManuallyCollapsedPrograms.value = false
-          active.value = subItem.title
-          router.push('/programs-questionnaires')
         }
       } else {
         // Toggle other submenus
-        expandedProgramsSubmenu.value = !expandedProgramsSubmenu.value
+        expandedProgramsQuestionnaires.value = !expandedProgramsQuestionnaires.value
       }
     }
   } else {
@@ -351,12 +404,14 @@ const handleSubmenuClick = (subItem) => {
     }
     
     // Navigate based on submenu item
-    if (subItem.title === 'Programs & questionnaires') {
-      router.push('/programs-questionnaires')
+    if (subItem.title === 'My progress') {
+      router.push('/my-progress')
     } else if (subItem.title === 'Monitors') {
       router.push('/monitors')
     } else if (subItem.title === 'Library') {
       router.push('/library')
+    } else if (subItem.title === 'All assignments') {
+      router.push('/all-assignments')
     } else {
       // Add routes for other submenu items when created
       console.log(`${subItem.title} page not implemented yet`)
@@ -555,6 +610,17 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   transform: rotate(180deg);
 }
 
+/* Right arrow for mobile */
+.wireframe-arrow-right {
+  width: auto !important;
+  height: auto !important;
+  border: none !important;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-left: auto;
+}
+
 .wireframe-submenu {
   margin-left: 20px;
   margin-top: 4px;
@@ -745,6 +811,30 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   background: #e0e0e0;
 }
 
+/* Menu header styling */
+.wireframe-menu-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 4px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  background: #f8f8f8;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  color: #333;
+  cursor: default;
+}
+
+.wireframe-menu-header .wireframe-icon {
+  min-width: 24px;
+}
+
+.wireframe-menu-header .wireframe-label {
+  flex: 1;
+  font-size: 14px;
+}
+
 /* Mobile: < 768px */
 @media (max-width: 767px) {
   .wireframe-sidebar-content {
@@ -773,8 +863,14 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
     margin-left: 12px !important;
   }
   
-  /* Mobile arrow styling */
-  .wireframe-menu-item .wireframe-arrow {
+  /* Hide up/down arrows on mobile, but show right arrows */
+  .wireframe-menu-header .wireframe-arrow:not(.wireframe-arrow-right),
+  .wireframe-submenu-item .wireframe-arrow:not(.wireframe-arrow-right) {
+    display: none !important;
+  }
+  
+  /* Mobile arrow styling - only show right arrows */
+  .wireframe-menu-item .wireframe-arrow-right {
     font-size: 18px !important;
     font-weight: bold !important;
     color: #333 !important;

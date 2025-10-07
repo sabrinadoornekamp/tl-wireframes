@@ -4,6 +4,8 @@ import ProgramsQuestionnaires from '@/components/ProgramsQuestionnaires.vue'
 import ProgramDetail from '@/components/ProgramDetail.vue'
 import QuestionnaireDetail from '@/components/QuestionnaireDetail.vue'
 import TherapielandOverview from '@/components/TherapielandOverview.vue'
+import MyProgress from '@/components/MyProgress.vue'
+import AllAssignments from '@/components/AllAssignments.vue'
 import CBTIntroductionModule from '@/components/CBTIntroductionModule.vue'
 import CBTNegativeThoughtsModule from '@/components/CBTNegativeThoughtsModule.vue'
 import CBTThoughtChallengingModule from '@/components/CBTThoughtChallengingModule.vue'
@@ -31,6 +33,16 @@ const routes = [
     path: '/my-therapieland',
     name: 'My therapieland',
     component: TherapielandOverview
+  },
+  {
+    path: '/my-progress',
+    name: 'My progress',
+    component: MyProgress
+  },
+  {
+    path: '/all-assignments',
+    name: 'All assignments',
+    component: AllAssignments
   },
   {
     path: '/programs-questionnaires',
