@@ -140,6 +140,37 @@
               </div>
             </div>
             
+            <!-- Questionnaires -->
+            <div
+              class="wireframe-submenu-item"
+              :class="{ 'wireframe-active': active === 'Questionnaires' }"
+              @click="handleSubmenuClick({ title: 'Questionnaires', hasSubmenu: true })"
+            >
+              <div class="wireframe-submenu-icon" style="min-width: 24px;"></div>
+              <div class="wireframe-label">Questionnaires</div>
+              <div class="wireframe-arrow" :class="{ 'wireframe-arrow-open': expandedQuestionnaires }"></div>
+            </div>
+            
+            <!-- Questionnaires submenu - positioned directly under Questionnaires -->
+            <div v-if="expandedQuestionnaires" class="wireframe-questionnaires-submenu">
+              <!-- Individual Questionnaires -->
+              <div
+                v-for="questionnaire in questionnairesSubmenu"
+                :key="questionnaire.title"
+                class="wireframe-submenu-item wireframe-questionnaire-item"
+                :class="{ 'wireframe-active': active === questionnaire.title }"
+                @click="handleQuestionnaireClick(questionnaire)"
+              >
+                <div class="wireframe-submenu-icon" style="min-width: 20px;"></div>
+                <div class="wireframe-questionnaire-content">
+                  <div class="wireframe-label">{{ questionnaire.title }}</div>
+                  <div class="wireframe-questionnaire-status" :class="questionnaire.status">
+                    {{ questionnaire.statusText }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <!-- Library -->
             <div
               class="wireframe-submenu-item"
@@ -205,6 +236,17 @@
             <div class="wireframe-arrow wireframe-arrow-right">→</div>
           </div>
           
+          <!-- Questionnaires -->
+          <div
+            class="wireframe-menu-item"
+            :class="{ 'wireframe-active': active === 'Questionnaires' }"
+            @click="handleSubmenuClick({ title: 'Questionnaires', hasSubmenu: true })"
+          >
+            <div class="wireframe-icon" style="min-width: 24px;"></div>
+            <div class="wireframe-label">Questionnaires</div>
+            <div class="wireframe-arrow wireframe-arrow-right">→</div>
+          </div>
+          
           <!-- Library -->
           <div
             class="wireframe-menu-item"
@@ -248,6 +290,26 @@
                   ></div>
                 </div>
                 <div class="wireframe-progress-text">{{ program.progress }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Level 3: Questionnaires Submenu (Mobile) -->
+        <div v-if="isMobile && mobileCurrentLevel === 3" class="wireframe-menu">
+          <!-- Individual Questionnaires -->
+          <div
+            v-for="questionnaire in questionnairesSubmenu"
+            :key="questionnaire.title"
+            class="wireframe-menu-item wireframe-questionnaire-item"
+            :class="{ 'wireframe-active': active === questionnaire.title }"
+            @click="handleQuestionnaireClick(questionnaire)"
+          >
+            <div class="wireframe-icon" style="min-width: 20px;"></div>
+            <div class="wireframe-questionnaire-content">
+              <div class="wireframe-label">{{ questionnaire.title }}</div>
+              <div class="wireframe-questionnaire-status" :class="questionnaire.status">
+                {{ questionnaire.statusText }}
               </div>
             </div>
           </div>
@@ -303,10 +365,19 @@ const programsSubmenu = [
   { title: 'Anger Management Program', progress: 0, status: 'not-started' },
 ]
 
+const questionnairesSubmenu = [
+  { title: 'PHQ-9 Depression Screening', status: 'available', statusText: 'Available' },
+  { title: 'GAD-7 Anxiety Assessment', status: 'completed', statusText: 'Completed' },
+  { title: 'PTSD Checklist (PCL-5)', status: 'available', statusText: 'Available' },
+  { title: 'Social Anxiety Scale', status: 'completed', statusText: 'Completed' },
+  { title: 'Weekly Mood Check-in', status: 'available', statusText: 'Available' },
+]
+
 const active = ref('Dashboard')
 const expandedSubmenu = ref(false)
 const expandedProgramsSubmenu = ref(false)
 const expandedProgramsQuestionnaires = ref(false)
+const expandedQuestionnaires = ref(false)
 const userManuallyCollapsedPrograms = ref(false)
 
 // Mobile navigation state
@@ -378,8 +449,12 @@ const handleMenuClick = (item) => {
 const handleSubmenuClick = (subItem) => {
   if (subItem.hasSubmenu) {
     if (props.isMobile) {
-      // On mobile, navigate to programs submenu level
-      navigateToLevel(2, subItem.title)
+      // On mobile, navigate to appropriate submenu level
+      if (subItem.title === 'Programs & Questionnaires') {
+        navigateToLevel(2, subItem.title)
+      } else if (subItem.title === 'Questionnaires') {
+        navigateToLevel(3, subItem.title)
+      }
       // Don't navigate to a page, just show submenu
     } else {
       // Desktop behavior - toggle the submenu (allow manual collapse/expand)
@@ -391,6 +466,8 @@ const handleSubmenuClick = (subItem) => {
         } else {
           userManuallyCollapsedPrograms.value = false
         }
+      } else if (subItem.title === 'Questionnaires') {
+        expandedQuestionnaires.value = !expandedQuestionnaires.value
       } else {
         // Toggle other submenus
         expandedProgramsQuestionnaires.value = !expandedProgramsQuestionnaires.value
@@ -444,6 +521,16 @@ const handleProgramClick = (program) => {
   
   const programId = programRouteMap[program.title] || program.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')
   router.push(`/program/${programId}`)
+}
+
+const handleQuestionnaireClick = (questionnaire) => {
+  active.value = questionnaire.title
+  if (props.isMobile) {
+    resetMobileNavigation() // Reset mobile navigation when navigating to a questionnaire page
+  }
+  // Navigate to specific questionnaire detail page
+  const questionnaireId = questionnaire.title.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '')
+  router.push(`/questionnaire/${questionnaireId}`)
 }
 
 // Mobile navigation functions
@@ -673,6 +760,45 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   margin-left: 20px;
   margin-top: 4px;
   margin-bottom: 8px;
+}
+
+.wireframe-questionnaires-submenu {
+  margin-left: 20px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.wireframe-questionnaire-item {
+  margin-bottom: 4px;
+}
+
+.wireframe-questionnaire-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wireframe-questionnaire-status {
+  font-size: 11px;
+  padding: 2px 6px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.wireframe-questionnaire-status.available {
+  background: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.wireframe-questionnaire-status.completed {
+  background: #2196F3;
+  color: white;
+  border-color: #2196F3;
 }
 
 .wireframe-program-item {

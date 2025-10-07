@@ -321,6 +321,28 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 16px;
+}
+
+/* Mobile: Stack header nav vertically for better spacing */
+@media (max-width: 768px) {
+  .wireframe-header-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .wireframe-back-button {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+  
+  .wireframe-module-progress {
+    width: 100%;
+  }
 }
 
 .wireframe-back-button {
@@ -408,7 +430,7 @@ onUnmounted(() => {
   border-radius: 4px;
   padding: 16px;
   background: white;
-  margin: 0 16px 16px 16px;
+  margin: 0 16px 20px 16px;
 }
 
 .wireframe-mobile-nav-header {

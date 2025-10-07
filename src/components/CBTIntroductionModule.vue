@@ -349,6 +349,28 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 16px;
+}
+
+/* Mobile: Stack header nav vertically for better spacing */
+@media (max-width: 768px) {
+  .wireframe-header-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .wireframe-back-button {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+  
+  .wireframe-module-progress {
+    width: 100%;
+  }
 }
 
 .wireframe-back-button {
@@ -455,7 +477,7 @@ onUnmounted(() => {
   border-radius: 4px;
   padding: 16px;
   background: white;
-  margin: 0 16px 16px 16px;
+  margin: 0 16px 20px 16px;
 }
 
 .wireframe-mobile-nav-header {
@@ -480,54 +502,65 @@ onUnmounted(() => {
 
 .wireframe-mobile-nav-items {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   overflow-x: auto;
-  padding-bottom: 8px;
+  padding: 8px 0 12px 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .wireframe-mobile-nav-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 2px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
-  min-width: 120px;
+  min-width: 140px;
   flex-shrink: 0;
+  background: white;
 }
 
 .wireframe-mobile-nav-item:hover {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
+  border-color: #999;
+  transform: translateY(-1px);
 }
 
 .wireframe-mobile-nav-active {
-  background-color: #d0d0d0;
+  background-color: #e0e0e0;
   border-color: #000;
+  font-weight: 600;
 }
 
 .wireframe-mobile-nav-icon {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: black;
+  min-width: 24px;
+  text-align: center;
 }
 
 .wireframe-mobile-nav-content {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .wireframe-mobile-nav-title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: black;
-  line-height: 1.2;
+  line-height: 1.3;
+  margin-bottom: 2px;
 }
 
 .wireframe-mobile-nav-duration {
-  font-size: 10px;
+  font-size: 11px;
   color: #666;
+  font-weight: 500;
 }
 
 .wireframe-module-layout {
@@ -559,6 +592,20 @@ onUnmounted(() => {
   .wireframe-module-content {
     width: 100%;
     margin: 0;
+    padding: 20px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background: white;
+    margin-top: 8px;
+  }
+  
+  .wireframe-module-header {
+    padding: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .wireframe-module-title-section {
+    margin-top: 16px;
   }
 }
 
