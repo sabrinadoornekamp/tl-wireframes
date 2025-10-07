@@ -89,8 +89,8 @@ onBeforeUnmount(() => {
 /* Global typewriter font for all wireframe components */
 * {
   font-family: 'Courier New', 'Monaco', 'Menlo', monospace !important;
-  color: black;
-  font-weight: 600;
+  color: #000000 !important;
+  font-weight: 700 !important;
 }
 
 /* Ensure white background for the entire application */
@@ -153,12 +153,55 @@ html, body, #app {
   .router-view {
     padding: 16px;
   }
+  
+  /* Enhanced text readability on mobile */
+  * {
+    color: #000000 !important;
+    font-weight: 800 !important;
+    text-shadow: 0 0 0.5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Make specific elements even darker on mobile */
+  .v-list-item-title,
+  .v-list-item-subtitle,
+  .v-card-title,
+  .v-card-text,
+  .v-btn,
+  .v-chip,
+  .v-badge,
+  .v-toolbar-title {
+    color: #000000 !important;
+    font-weight: 800 !important;
+  }
 }
 
 /* Small mobile: < 480px */
 @media (max-width: 479px) {
   .router-view {
     padding: 12px;
+  }
+  
+  /* Even more enhanced text readability on small mobile */
+  * {
+    color: #000000 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Make all text elements very dark and bold on small mobile */
+  .v-list-item-title,
+  .v-list-item-subtitle,
+  .v-card-title,
+  .v-card-text,
+  .v-btn,
+  .v-chip,
+  .v-badge,
+  .v-toolbar-title,
+  .wireframe-content-text,
+  .wireframe-module-title,
+  .wireframe-module-description {
+    color: #000000 !important;
+    font-weight: 900 !important;
   }
 }
 
