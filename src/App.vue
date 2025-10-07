@@ -93,9 +93,17 @@ onBeforeUnmount(() => {
   font-weight: 600;
 }
 
+/* Ensure white background for the entire application */
+html, body, #app {
+  background-color: white !important;
+  background: white !important;
+}
+
 /* Override Vuetify components to use typewriter font */
 .v-application {
   font-family: 'Courier New', 'Monaco', 'Menlo', monospace !important;
+  background-color: white !important;
+  background: white !important;
 }
 
 .v-toolbar-title,
