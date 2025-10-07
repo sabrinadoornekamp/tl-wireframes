@@ -10,6 +10,19 @@
     :permanent="!isMobile"
     :temporary="isMobile"
     :overlay="isMobile"
+    :touchless="false"
+    :disable-resize-watcher="false"
+    :disable-route-watcher="false"
+    :close-on-content-click="false"
+    :expand-on-hover="false"
+    :floating="false"
+    :right="false"
+    :stateless="false"
+    :mini-variant="false"
+    :mini-variant-width="56"
+    :mobile-breakpoint="768"
+    :persistent="false"
+    :tag="'nav'"
   >
     <div class="wireframe-sidebar-content">
       <div>
@@ -290,9 +303,11 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
 /* Wireframe Styles */
 .wireframe-sidebar {
   border: 2px solid #333 !important;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, transform 0.3s ease;
   height: 100vh !important;
   overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 /* Ensure sidebar borders are always visible */
@@ -363,6 +378,10 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   min-width: 24px;
   width: 100%;
   font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  touch-action: manipulation;
+  user-select: none;
+  min-height: 48px;
 }
 
 .wireframe-menu-item:hover {
@@ -553,8 +572,10 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   }
   
   .wireframe-menu-item {
-    padding: 10px !important;
-    margin-bottom: 3px !important;
+    padding: 12px !important;
+    margin-bottom: 4px !important;
+    min-height: 52px !important;
+    font-size: 16px !important;
   }
   
   .wireframe-submenu {
@@ -562,7 +583,14 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   }
   
   .wireframe-submenu-item {
-    padding: 6px 10px !important;
+    padding: 8px 12px !important;
+    min-height: 44px !important;
+  }
+  
+  /* Better touch targets for tablet */
+  .wireframe-menu-item:active {
+    transform: scale(0.98);
+    background: #e0e0e0 !important;
   }
 }
 
@@ -573,8 +601,11 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   }
   
   .wireframe-menu-item {
-    padding: 8px !important;
-    margin-bottom: 2px !important;
+    padding: 14px 12px !important;
+    margin-bottom: 4px !important;
+    min-height: 56px !important;
+    font-size: 16px !important;
+    border-width: 2px !important;
   }
   
   .wireframe-submenu {
@@ -582,11 +613,31 @@ const logoutIcon = 'https://figma-alpha-api.s3.us-west-2.amazonaws.com/mcp/get_c
   }
   
   .wireframe-submenu-item {
-    padding: 4px 8px !important;
+    padding: 10px 12px !important;
+    min-height: 48px !important;
+    font-size: 15px !important;
   }
   
   .wireframe-programs-submenu {
     margin-left: 12px !important;
+  }
+  
+  /* Better touch targets for mobile */
+  .wireframe-menu-item:active {
+    transform: scale(0.97);
+    background: #d0d0d0 !important;
+    border-color: #000 !important;
+  }
+  
+  .wireframe-submenu-item:active {
+    transform: scale(0.97);
+    background: #d0d0d0 !important;
+  }
+  
+  /* Improve touch scrolling */
+  .wireframe-sidebar {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 }
 </style>
