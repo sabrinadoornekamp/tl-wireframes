@@ -1,8 +1,8 @@
 <template>
   <div class="wireframe-dashboard">
     <div class="wireframe-header">
-      <div class="wireframe-title">Therapieland</div>
-      <div class="wireframe-subtitle">Monitor your therapy progress and health journey</div>
+      <div class="wireframe-title">Therapieland Dashboard</div>
+      <div class="wireframe-subtitle">Your personalized therapy journey and wellness tracking</div>
     </div>
     
     <div class="wireframe-content">
@@ -111,23 +111,30 @@ const tasks = [
   margin: 0 auto;
 }
 
+/* Dashboard specific styles */
+
 .wireframe-header {
   margin-bottom: 32px;
   border: 2px solid #333;
   padding: 20px;
   border-radius: 4px;
+  background: white;
+  color: #333;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 }
 
 .wireframe-title {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 28px;
+  font-weight: 600;
   color: #333;
   margin-bottom: 8px;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 }
 
 .wireframe-subtitle {
   color: #666;
   font-size: 16px;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 }
 
 .wireframe-content {
@@ -165,7 +172,7 @@ const tasks = [
 
 .wireframe-card-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -198,7 +205,7 @@ const tasks = [
 
 .wireframe-metric-value {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -219,7 +226,7 @@ const tasks = [
 
 .wireframe-chart-title {
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
@@ -287,7 +294,7 @@ const tasks = [
 }
 
 .wireframe-task-title {
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
   margin-bottom: 4px;
 }
@@ -331,7 +338,7 @@ const tasks = [
 }
 
 .wireframe-notification-title {
-  font-weight: 500;
+  font-weight: 600;
   color: #333;
   margin-bottom: 4px;
 }
